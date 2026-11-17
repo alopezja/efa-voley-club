@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { serverEnv } from "@/lib/env";
 import { slugify } from "@/lib/slug";
@@ -36,4 +36,28 @@ export async function createPresignedUpload(folder: string, filename: string, co
   });
   const uploadUrl = await getSignedUrl(r2Client(), command, { expiresIn: 600 });
   return { uploadUrl, key, publicUrl: publicUrlForKey(key, env.R2_PUBLIC_BASE_URL) };
+}
+
+export function keyFromPublicUrl(url: string, base: string): string | null {
+  const prefix = base.replace(/\/$/, "") + "/";
+  return url.startsWith(prefix) ? url.slice(prefix.length) : null;
+}
+
+export async function uploadToR2(
+  folder: string,
+  filename: string,
+  contentType: string,
+  body: Uint8Array
+) {
+  const env = serverEnv();
+  const key = buildObjectKey(folder, filename);
+  await r2Client().send(
+    new PutObjectCommand({ Bucket: env.R2_BUCKET, Key: key, ContentType: contentType, Body: body })
+  );
+  return { key, publicUrl: publicUrlForKey(key, env.R2_PUBLIC_BASE_URL) };
+}
+
+export async function deleteFromR2(key: string) {
+  const env = serverEnv();
+  await r2Client().send(new DeleteObjectCommand({ Bucket: env.R2_BUCKET, Key: key }));
 }
