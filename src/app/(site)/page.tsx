@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { getGalleryItems } from "@/lib/gallery";
 import { youtubeId, youtubeThumb } from "@/lib/gallery-validation";
-import { HORARIOS } from "@/lib/club";
+import { getSchedules } from "@/lib/schedules";
 
 const pilares = [
   {
@@ -28,7 +28,10 @@ const pasos = [
 ];
 
 export default async function Home() {
-  const galeria = (await getGalleryItems()).slice(0, 6);
+  const [galeria, horarios] = await Promise.all([
+    getGalleryItems().then((g) => g.slice(0, 6)),
+    getSchedules().then((h) => h.slice(0, 2)),
+  ]);
 
   return (
     <>
@@ -152,20 +155,33 @@ export default async function Home() {
       </Section>
 
       {/* DÓNDE Y CUÁNDO */}
-      <Section tone="dark">
-        <Container>
-          <h2 className="text-3xl text-efa-bone sm:text-4xl">Dónde y cuándo jugamos</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {HORARIOS.map((h) => (
-              <div key={h.dia} className="rounded-lg border border-efa-ash/30 p-6">
-                <p className="font-display text-2xl uppercase text-efa-red">{h.dia}</p>
-                <p className="mt-2 text-xl text-efa-bone">{h.lugar}</p>
-                <p className="mt-1 text-efa-ash">{h.horario}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
+      {horarios.length > 0 && (
+        <Section tone="dark">
+          <Container>
+            <h2 className="text-3xl text-efa-bone sm:text-4xl">Dónde y cuándo jugamos</h2>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
+              {horarios.map((h) => (
+                <div key={h.id} className="rounded-lg border border-efa-ash/30 p-6">
+                  <p className="font-display text-2xl uppercase text-efa-red">{h.dia}</p>
+                  {h.lugar && <p className="mt-2 text-xl text-efa-bone">{h.lugar}</p>}
+                  {h.horario && <p className="mt-1 text-efa-ash">{h.horario}</p>}
+                  {h.descripcion && <p className="mt-1 text-sm text-efa-ash">{h.descripcion}</p>}
+                  {h.maps_url && (
+                    <a
+                      href={h.maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-efa-red hover:underline"
+                    >
+                      📍 Cómo llegar
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Container>
+        </Section>
+      )}
 
       {/* VISTA PREVIA GALERÍA */}
       {galeria.length > 0 && (
