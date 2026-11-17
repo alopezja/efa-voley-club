@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  /* Paleta del club (del logo) */
-  --color-efa-black: #0d0d0d;
-  --color-efa-red: #d81f26;
-  --color-efa-cream: #f2ece1;
-  --color-efa-gray: #1a1a1a;
+  /* Paleta "cancha" (del logo) */
+  --color-efa-ink: #0e0e0f;    /* negro cancha, fondo oscuro */
+  --color-efa-bone: #f2ece1;   /* crema/hueso */
+  --color-efa-red: #d81f26;    /* rojo remate, la cantada "IN" */
+  --color-efa-chalk: #ffffff;  /* blanco tiza, las líneas */
+  --color-efa-ash: #8c877e;    /* gris ceniza, texto secundario */
+  --color-efa-sand: #e7dfd0;   /* crema profundo, bordes en claro */
 
-  --font-display: var(--font-oswald), system-ui, sans-serif;
+  --font-display: var(--font-anton), system-ui, sans-serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
 }
 
@@ -16,13 +18,35 @@
 }
 
 body {
-  background-color: var(--color-efa-black);
-  color: var(--color-efa-cream);
+  background-color: var(--color-efa-ink);
+  color: var(--color-efa-bone);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, .font-display {
+h1, h2, h3 {
   font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+}
+
+::selection {
+  background: var(--color-efa-red);
+  color: #fff;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-efa-red);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
