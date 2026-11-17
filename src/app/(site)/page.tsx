@@ -2,6 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
+import { getGalleryItems } from "@/lib/gallery";
+import { youtubeId, youtubeThumb } from "@/lib/gallery-validation";
+import { HORARIOS } from "@/lib/club";
 
 const pilares = [
   {
@@ -18,26 +21,26 @@ const pilares = [
   },
 ];
 
-export default function Home() {
+const pasos = [
+  { n: "1", titulo: "Regístrate", texto: "Déjanos tus datos en el formulario de la web." },
+  { n: "2", titulo: "Te contactamos", texto: "Te escribimos para darte la bienvenida y contarte los detalles." },
+  { n: "3", titulo: "Ven a jugar", texto: "Te esperamos en la cancha. ¡Eso fue adentro!" },
+];
+
+export default async function Home() {
+  const galeria = (await getGalleryItems()).slice(0, 6);
+
   return (
     <>
       {/* HERO */}
       <section className="relative overflow-hidden bg-efa-ink">
-        {/* Motivo: la línea de cancha y el balón que cae justo adentro */}
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-56">
           <div className="absolute bottom-14 left-0 right-0 h-px bg-efa-chalk/30" />
           <svg
             viewBox="0 0 220 160"
             className="absolute bottom-14 left-[8%] hidden h-40 w-56 overflow-visible sm:block"
           >
-            <path
-              d="M10 24 Q 120 -6 150 118"
-              fill="none"
-              stroke="#d81f26"
-              strokeWidth="2"
-              strokeDasharray="3 7"
-              opacity="0.7"
-            />
+            <path d="M10 24 Q 120 -6 150 118" fill="none" stroke="#d81f26" strokeWidth="2" strokeDasharray="3 7" opacity="0.7" />
             <circle cx="150" cy="118" r="9" fill="#d81f26" />
           </svg>
           <span className="absolute bottom-6 left-[calc(8%+150px)] hidden text-xs font-semibold uppercase tracking-wide text-efa-red sm:block">
@@ -56,9 +59,8 @@ export default function Home() {
                 todos
               </h1>
               <p className="mt-6 max-w-md text-lg text-efa-ash">
-                Eso Fue Adentro Voley Club — un club de la comunidad para jugar
-                vóley por gusto. Niños, jóvenes y adultos: aquí hay cancha para
-                todos.
+                Eso Fue Adentro Voley Club — un club de la comunidad para jugar vóley por gusto.
+                Niños, jóvenes y adultos: aquí hay cancha para todos.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-5">
                 <Link
@@ -68,10 +70,10 @@ export default function Home() {
                   Súmate al club
                 </Link>
                 <Link
-                  href="/nosotros"
+                  href="/retar"
                   className="inline-flex items-center border-b-2 border-efa-chalk/40 pb-1 font-semibold text-efa-bone transition hover:border-efa-red"
                 >
-                  Conócenos
+                  Rétanos a jugar
                 </Link>
               </div>
             </div>
@@ -94,13 +96,11 @@ export default function Home() {
       <Section tone="light">
         <Container>
           <div className="max-w-2xl border-l-2 border-efa-red pl-6">
-            <h2 className="text-3xl text-efa-ink sm:text-4xl">
-              Un lugar para jugar vóley
-            </h2>
+            <h2 className="text-3xl text-efa-ink sm:text-4xl">Un lugar para jugar vóley</h2>
             <p className="mt-5 text-lg leading-relaxed text-efa-ink/70">
-              EFA es un club de la comunidad: un espacio abierto para quienes
-              quieren jugar vóley por hobby. Queremos que más personas, de todas
-              las edades, tengan dónde practicar, moverse y compartir.
+              EFA es un club de la comunidad: un espacio abierto para quienes quieren jugar vóley por
+              hobby. Queremos que más personas, de todas las edades, tengan dónde practicar, moverse y
+              compartir.
             </p>
             <Link
               href="/nosotros"
@@ -127,18 +127,105 @@ export default function Home() {
         </Container>
       </Section>
 
-      {/* CTA FINAL */}
-      <section className="bg-efa-red">
-        <Container className="flex flex-col items-start gap-6 py-16 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="max-w-xl text-3xl text-white sm:text-4xl">
-            ¿Tienes ganas de jugar?
-          </h2>
+      {/* CÓMO SUMARTE */}
+      <Section tone="light">
+        <Container>
+          <h2 className="text-3xl text-efa-ink sm:text-4xl">Cómo sumarte</h2>
+          <div className="mt-10 grid gap-8 sm:grid-cols-3">
+            {pasos.map((p) => (
+              <div key={p.n} className="flex gap-4">
+                <span className="font-display text-5xl leading-none text-efa-red">{p.n}</span>
+                <div>
+                  <h3 className="text-xl text-efa-ink">{p.titulo}</h3>
+                  <p className="mt-2 text-efa-ink/70">{p.texto}</p>
+                </div>
+              </div>
+            ))}
+          </div>
           <Link
             href="/registro"
-            className="inline-flex items-center rounded-sm bg-efa-ink px-7 py-3 font-semibold text-efa-bone transition hover:bg-black"
+            className="mt-10 inline-flex items-center rounded-sm bg-efa-ink px-6 py-3 font-semibold text-efa-bone transition hover:bg-efa-red"
           >
-            Súmate al club
+            Quiero registrarme
           </Link>
+        </Container>
+      </Section>
+
+      {/* DÓNDE Y CUÁNDO */}
+      <Section tone="dark">
+        <Container>
+          <h2 className="text-3xl text-efa-bone sm:text-4xl">Dónde y cuándo jugamos</h2>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {HORARIOS.map((h) => (
+              <div key={h.dia} className="rounded-lg border border-efa-ash/30 p-6">
+                <p className="font-display text-2xl uppercase text-efa-red">{h.dia}</p>
+                <p className="mt-2 text-xl text-efa-bone">{h.lugar}</p>
+                <p className="mt-1 text-efa-ash">{h.horario}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      {/* VISTA PREVIA GALERÍA */}
+      {galeria.length > 0 && (
+        <Section tone="light">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="text-3xl text-efa-ink sm:text-4xl">Galería</h2>
+              <Link
+                href="/galeria"
+                className="border-b-2 border-efa-ink/30 pb-1 font-semibold text-efa-ink transition hover:border-efa-red"
+              >
+                Ver todo
+              </Link>
+            </div>
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {galeria.map((it) => {
+                const yt = it.enlace_youtube ? youtubeId(it.enlace_youtube) : null;
+                const thumb = it.tipo === "foto" ? it.url : yt ? youtubeThumb(yt) : null;
+                return (
+                  <Link
+                    key={it.id}
+                    href="/galeria"
+                    className="relative aspect-square overflow-hidden rounded-lg bg-efa-ink/80"
+                  >
+                    {thumb && (
+                      <img src={thumb} alt={it.titulo ?? ""} loading="lazy" className="h-full w-full object-cover" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </Container>
+        </Section>
+      )}
+
+      {/* CTA FINAL: SÚMATE + RÉTANOS */}
+      <section className="bg-efa-red">
+        <Container className="py-16">
+          <div className="grid gap-10 sm:grid-cols-2">
+            <div>
+              <h2 className="text-3xl text-white sm:text-4xl">¿Tienes ganas de jugar?</h2>
+              <p className="mt-3 max-w-sm text-white/85">Súmate al club. Abierto a todas las edades y niveles.</p>
+              <Link
+                href="/registro"
+                className="mt-6 inline-flex items-center rounded-sm bg-efa-ink px-7 py-3 font-semibold text-efa-bone transition hover:bg-black"
+              >
+                Súmate al club
+              </Link>
+            </div>
+            <div className="border-t border-white/30 pt-10 sm:border-l sm:border-t-0 sm:pl-10 sm:pt-0">
+              <h2 className="text-3xl text-white sm:text-4xl">¿Tienes equipo?</h2>
+              <p className="mt-3 max-w-sm text-white/85">Rétanos a un partido y cuadramos el encuentro.</p>
+              <Link
+                href="/retar"
+                className="mt-6 inline-flex items-center rounded-sm border-2 border-white px-7 py-3 font-semibold text-white transition hover:bg-white hover:text-efa-red"
+              >
+                Rétanos a jugar
+              </Link>
+            </div>
+          </div>
         </Container>
       </section>
     </>

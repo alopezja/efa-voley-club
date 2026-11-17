@@ -2,9 +2,11 @@ import Link from "next/link";
 
 const links = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/jugadores", label: "Jugadores" },
+  { href: "/admin/retos", label: "Retos" },
   { href: "/admin/galeria", label: "Galería" },
 ];
-const upcoming = ["Noticias", "Convocatorias", "Jugadores", "Mensajes"];
+const upcoming = ["Noticias", "Convocatorias", "Mensajes"];
 
 export function AdminNav({ email }: { email?: string | null }) {
   return (
