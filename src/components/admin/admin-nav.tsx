@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-const upcoming = ["Noticias", "Convocatorias", "Galería", "Jugadores", "Mensajes"];
+const links = [
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/galeria", label: "Galería" },
+];
+const upcoming = ["Noticias", "Convocatorias", "Jugadores", "Mensajes"];
 
 export function AdminNav({ email }: { email?: string | null }) {
   return (
@@ -9,12 +13,17 @@ export function AdminNav({ email }: { email?: string | null }) {
       className="flex w-full flex-col gap-2 border-b border-efa-ash/30 bg-efa-ink p-4 md:min-h-screen md:w-64 md:border-b-0 md:border-r md:p-6"
     >
       <p className="mb-2 font-display text-xl uppercase text-efa-bone">Panel EFA</p>
-      <Link
-        href="/admin"
-        className="block rounded-md bg-efa-red px-4 py-3 text-base font-semibold text-efa-chalk"
-      >
-        Dashboard
-      </Link>
+      {links.map((l) => (
+        <Link
+          key={l.href}
+          href={l.href}
+          className={`block rounded-md px-4 py-3 text-base font-semibold ${
+            l.href === "/admin" ? "bg-efa-red text-efa-chalk" : "text-efa-bone hover:text-efa-red"
+          }`}
+        >
+          {l.label}
+        </Link>
+      ))}
       {upcoming.map((label) => (
         <span
           key={label}
