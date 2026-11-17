@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EFA Voley Club
 
-## Getting Started
+Sitio web del club de voleibol **Eso Fue Adentro (EFA)**: noticias, convocatorias, galería e inscripciones.
 
-First, run the development server:
+## Stack
+
+- Next.js 15 (App Router, `src/`) + React 19 + TypeScript
+- Tailwind CSS v4 (tokens del club en `src/app/globals.css`)
+- Supabase (Postgres + Auth) para datos
+- Cloudflare R2 (compatible con S3) para imágenes, con presigned uploads
+- Vitest + React Testing Library
+
+## Cómo correr
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.local.example .env.local   # y completar los valores
+npm run dev                        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otros comandos: `npm run build`, `npm test`, `npm run lint`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Ver [`.env.local.example`](./.env.local.example) para la lista completa (Supabase, Cloudflare R2 y Resend). Las variables se validan en `src/lib/env.ts`.
 
-## Learn More
+## Supabase y R2 requieren credenciales
 
-To learn more about Next.js, take a look at the following resources:
+- **Supabase:** crear un proyecto dedicado de EFA y copiar la URL, la anon key y la service role key a `.env.local`.
+- **Cloudflare R2:** crear el bucket, generar credenciales S3 y configurar CORS para permitir `PUT` desde el dominio del sitio.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Migraciones
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Las migraciones están en `supabase/migrations/`:
 
-## Deploy on Vercel
+1. `0001_init.sql` (esquema)
+2. `0002_rls.sql` (políticas RLS)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Ejecutarlas en orden, ya sea pegándolas en el SQL Editor del proyecto de Supabase, o con la CLI:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+supabase link --project-ref <ref>
+supabase db push
+```
