@@ -1,10 +1,6 @@
-export const CATEGORIAS = ["Masculino", "Femenino", "Mixto"] as const;
-export type Categoria = (typeof CATEGORIAS)[number];
-
 export type RegistroValues = {
   nombre: string;
   apellido: string;
-  categoria: string;
   email: string;
   telefono: string;
 };
@@ -17,7 +13,6 @@ export function validateRegistro(input: Partial<RegistroValues>): RegistroResult
   const values: RegistroValues = {
     nombre: (input.nombre ?? "").trim(),
     apellido: (input.apellido ?? "").trim(),
-    categoria: (input.categoria ?? "").trim(),
     email: (input.email ?? "").trim(),
     telefono: (input.telefono ?? "").trim(),
   };
@@ -25,8 +20,6 @@ export function validateRegistro(input: Partial<RegistroValues>): RegistroResult
 
   if (values.nombre.length < 2) errors.nombre = "Escribe tu nombre.";
   if (values.apellido.length < 2) errors.apellido = "Escribe tu apellido.";
-  if (!CATEGORIAS.includes(values.categoria as Categoria))
-    errors.categoria = "Elige una categoría.";
   if (!values.email && !values.telefono)
     errors.contacto = "Déjanos un correo o un teléfono para contactarte.";
   if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))

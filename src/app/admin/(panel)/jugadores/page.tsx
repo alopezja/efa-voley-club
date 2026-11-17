@@ -20,9 +20,7 @@ function Fila({ p }: { p: Player }) {
           {p.nombre} {p.apellido}
         </p>
         <p className="text-sm text-efa-ash">
-          {p.categoria ?? "Sin categoría"}
-          {p.email ? ` · ${p.email}` : ""}
-          {p.telefono ? ` · ${p.telefono}` : ""}
+          {[p.email, p.telefono].filter(Boolean).join(" · ") || "Sin contacto"}
         </p>
       </div>
       <div className="flex items-center gap-3">

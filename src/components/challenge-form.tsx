@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { sendChallenge, type ChallengeState } from "@/app/(site)/retar/actions";
+import { CATEGORIAS } from "@/lib/challenge-validation";
 
 const initial: ChallengeState = { status: "idle" };
 
@@ -40,6 +41,18 @@ export function ChallengeForm({ whatsappUrl }: { whatsappUrl: string | null }) {
           <input id="equipo" name="equipo" type="text" defaultValue={state.values?.equipo}
             disabled={pending} className={inputClass} />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="categoria" className="text-sm font-medium text-efa-ink">Categoría del partido</label>
+        <select id="categoria" name="categoria" defaultValue={state.values?.categoria ?? ""}
+          disabled={pending} aria-invalid={!!err.categoria} className={inputClass}>
+          <option value="" disabled>Elige una…</option>
+          {CATEGORIAS.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        {err.categoria && <p className="mt-2 text-sm text-efa-red">{err.categoria}</p>}
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">

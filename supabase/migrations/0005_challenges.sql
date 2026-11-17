@@ -3,6 +3,7 @@ create table challenges (
   id uuid primary key default gen_random_uuid(),
   nombre text not null,            -- quién reta (persona de contacto)
   equipo text,                     -- nombre del equipo (opcional)
+  categoria text,                  -- categoría del partido: Masculino / Femenino / Mixto
   email text,
   telefono text,
   fecha_propuesta text,            -- fecha/hora propuesta (texto libre)
