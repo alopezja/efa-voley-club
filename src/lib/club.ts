@@ -1,11 +1,5 @@
-// Datos del club en un solo lugar. Cambia CLUB_WHATSAPP cuando se confirme el número.
-
-export type Horario = { dia: string; lugar: string; horario: string };
-
-export const HORARIOS: Horario[] = [
-  { dia: "Martes", lugar: "Cancha de Manila", horario: "8:00 – 11:00 pm" },
-  { dia: "Viernes", lugar: "Cancha Yesid Santos (Estadio)", horario: "9:30 – 11:00 pm" },
-];
+// Datos del club. Los horarios ahora se editan desde el panel (tabla schedules).
+// Cambia CLUB_WHATSAPP cuando se confirme el número.
 
 // Número de WhatsApp en formato internacional SIN "+" ni espacios (ej: "573001112233").
 // Vacío = el botón de WhatsApp no se muestra todavía.

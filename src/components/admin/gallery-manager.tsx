@@ -31,13 +31,33 @@ function SubmitBtn({ children }: { children: React.ReactNode }) {
 export function GalleryManager({ items }: { items: GalleryItem[] }) {
   const [tab, setTab] = useState<"foto" | "video">("foto");
   const [msg, setMsg] = useState<GalleryActionState | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  function clearPreview() {
+    setPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  }
+
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    setPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return f ? URL.createObjectURL(f) : null;
+    });
+  }
 
   async function onPhoto(formData: FormData) {
     const f = fileRef.current?.files?.[0];
     if (f) formData.set("archivo", await compressImage(f));
-    setMsg(await uploadPhoto({ status: "idle" }, formData));
-    if (fileRef.current) fileRef.current.value = "";
+    const result = await uploadPhoto({ status: "idle" }, formData);
+    setMsg(result);
+    if (result.status === "success") {
+      if (fileRef.current) fileRef.current.value = "";
+      clearPreview();
+    }
   }
 
   async function onVideo(formData: FormData) {
@@ -74,22 +94,37 @@ export function GalleryManager({ items }: { items: GalleryItem[] }) {
         )}
 
         {tab === "foto" ? (
-          <form action={onPhoto} className="grid max-w-xl gap-4">
-            <input
-              ref={fileRef}
-              name="archivo"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              required
-              className={input}
-            />
-            <input name="titulo" placeholder="Título (opcional)" className={input} />
-            <input name="categoria" placeholder="Categoría (opcional)" className={input} />
-            <textarea name="descripcion" rows={2} placeholder="Descripción (opcional)" className={input} />
+          <div className="grid gap-6 md:grid-cols-[1fr_280px]">
+            <form action={onPhoto} className="grid gap-4">
+              <input
+                ref={fileRef}
+                name="archivo"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                required
+                onChange={onFileChange}
+                className={input}
+              />
+              <input name="titulo" placeholder="Título (opcional)" className={input} />
+              <input name="categoria" placeholder="Categoría (opcional)" className={input} />
+              <textarea name="descripcion" rows={2} placeholder="Descripción (opcional)" className={input} />
+              <div>
+                <SubmitBtn>Subir foto</SubmitBtn>
+              </div>
+            </form>
             <div>
-              <SubmitBtn>Subir foto</SubmitBtn>
+              <p className="mb-2 text-sm text-efa-ash">Vista previa</p>
+              <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-dashed border-efa-ash/40 bg-black/30">
+                {preview ? (
+                  <img src={preview} alt="Vista previa" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="px-4 text-center text-xs text-efa-ash">
+                    La imagen que elijas se verá aquí antes de subirla.
+                  </span>
+                )}
+              </div>
             </div>
-          </form>
+          </div>
         ) : (
           <form action={onVideo} className="grid max-w-xl gap-4">
             <input name="enlace" placeholder="Enlace de YouTube" required className={input} />
