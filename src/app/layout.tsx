@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     template: "%s · EFA Voley Club",
   },
   description:
-    "Eso Fue Adentro Voley Club (EFA): formación y competencia de voleibol. Noticias, convocatorias, galería e inscripciones.",
+    "Eso Fue Adentro Voley Club (EFA): club de voleibol de la comunidad para jugar por hobby, abierto a todas las edades. Noticias, convocatorias, galería e inscripciones.",
   openGraph: {
     title: "EFA Voley Club · Eso Fue Adentro",
-    description: "Club de voleibol EFA: formación y competencia.",
+    description: "Club de voleibol de la comunidad, para jugar por gusto y a toda edad.",
     type: "website",
     locale: "es_ES",
     images: ["/brand/efa-logo.jpg"],
