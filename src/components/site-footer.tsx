@@ -29,7 +29,8 @@ export function SiteFooter() {
             </span>
           </div>
           <p className="mt-4 max-w-xs text-sm text-efa-ash">
-            Eso Fue Adentro Voley Club. Formación y competencia de voleibol.
+            Eso Fue Adentro Voley Club. Un club de la comunidad para jugar vóley
+            por gusto, a toda edad.
           </p>
         </div>
 

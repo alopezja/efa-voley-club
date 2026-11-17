@@ -5,16 +5,16 @@ import { Section } from "@/components/ui/section";
 
 const pilares = [
   {
-    titulo: "Formación",
-    texto: "Entrenamiento técnico y táctico para crecer en cada categoría, con disciplina y método.",
+    titulo: "Para todas las edades",
+    texto: "Desde los más chicos hasta quienes vuelven a jugar después de años. No importa la edad: lo que importa son las ganas.",
   },
   {
-    titulo: "Competencia",
-    texto: "Participamos en torneos y convocatorias llevando el sello EFA a cada cancha.",
+    titulo: "Por el gusto de jugar",
+    texto: "Sin exigencias de alto rendimiento. Venimos a movernos, pasarla bien y disfrutar el vóley.",
   },
   {
     titulo: "Comunidad",
-    texto: "Más que un equipo: una familia que se acompaña dentro y fuera de la cancha.",
+    texto: "Más que un equipo: un grupo donde hacer amigos y encontrar dónde practicar este deporte.",
   },
 ];
 
@@ -49,15 +49,16 @@ export default function Home() {
           <div className="grid items-center gap-12 md:grid-cols-[1.1fr_0.9fr]">
             <div>
               <h1 className="text-5xl text-efa-bone sm:text-7xl">
-                Cada punto
+                El vóley
                 <br />
-                se juega
+                es para
                 <br />
-                al límite
+                todos
               </h1>
               <p className="mt-6 max-w-md text-lg text-efa-ash">
-                Eso Fue Adentro Voley Club — formación y competencia de voleibol
-                para todas las categorías.
+                Eso Fue Adentro Voley Club — un club de la comunidad para jugar
+                vóley por gusto. Niños, jóvenes y adultos: aquí hay cancha para
+                todos.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-5">
                 <Link
@@ -94,12 +95,12 @@ export default function Home() {
         <Container>
           <div className="max-w-2xl border-l-2 border-efa-red pl-6">
             <h2 className="text-3xl text-efa-ink sm:text-4xl">
-              Un club que se juega cada punto
+              Un lugar para jugar vóley
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-efa-ink/70">
-              En EFA el voleibol se gana en los detalles: la entrega en cada
-              entrenamiento, la lectura del juego y el apoyo del equipo. Formamos
-              jugadoras y jugadores dentro y fuera de la cancha.
+              EFA es un club de la comunidad: un espacio abierto para quienes
+              quieren jugar vóley por hobby. Queremos que más personas, de todas
+              las edades, tengan dónde practicar, moverse y compartir.
             </p>
             <Link
               href="/nosotros"
@@ -130,7 +131,7 @@ export default function Home() {
       <section className="bg-efa-red">
         <Container className="flex flex-col items-start gap-6 py-16 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="max-w-xl text-3xl text-white sm:text-4xl">
-            ¿Lista o listo para entrar a la cancha?
+            ¿Tienes ganas de jugar?
           </h2>
           <Link
             href="/registro"

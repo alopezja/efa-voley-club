@@ -7,19 +7,19 @@ import { getSiteContent } from "@/lib/site-content";
 export const metadata: Metadata = {
   title: "Nosotros",
   description:
-    "Conoce a Eso Fue Adentro Voley Club: nuestra historia, categorías y los valores que nos mueven dentro y fuera de la cancha.",
+    "Conoce a Eso Fue Adentro Voley Club: un club de la comunidad para jugar vóley por hobby, abierto a todas las edades.",
 };
 
 const categorias = [
-  { titulo: "Formativas", texto: "Primeros pasos en el voleibol: fundamentos, juego y gusto por entrenar." },
-  { titulo: "Juveniles", texto: "Técnica, táctica y primeras competencias para dar el salto de nivel." },
-  { titulo: "Mayores", texto: "Juego competitivo, torneos y convocatorias llevando el sello EFA." },
+  { titulo: "Niños y jóvenes", texto: "Un espacio para dar los primeros toques, hacer amigos y tomarle el gusto al vóley." },
+  { titulo: "Adultos", texto: "¿Hace años que no juegas o nunca tuviste dónde? Este es tu lugar para volver a la cancha." },
+  { titulo: "Todos los niveles", texto: "No necesitas experiencia ni condición física especial. Solo ganas de jugar." },
 ];
 
 const valores = [
-  { titulo: "Disciplina", texto: "El punto se gana en los entrenamientos que nadie ve." },
+  { titulo: "Sin presiones", texto: "No jugamos por rendimiento, jugamos por gusto y para pasarla bien." },
   { titulo: "Comunidad", texto: "Nos acompañamos dentro y fuera de la cancha." },
-  { titulo: "Al límite", texto: "Competimos con entrega, respeto y ganas de mejorar." },
+  { titulo: "Abierto a todos", texto: "No importa la edad ni el nivel: aquí hay cancha para ti." },
 ];
 
 export default async function NosotrosPage() {
