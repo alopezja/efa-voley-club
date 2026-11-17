@@ -14,7 +14,7 @@ export default async function AdminLoginPage() {
   if (user) redirect("/admin");
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-efa-ink px-4 py-12 text-efa-bone">
+    <div className="fixed inset-0 z-[100] flex items-center overflow-y-auto justify-center bg-efa-ink px-4 py-12 text-efa-bone">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-4 text-center">
           <Image
@@ -30,6 +30,6 @@ export default async function AdminLoginPage() {
         </div>
         <LoginForm />
       </div>
-    </main>
+    </div>
   );
 }
