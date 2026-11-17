@@ -4,6 +4,7 @@ export type Challenge = {
   id: string;
   nombre: string;
   equipo: string | null;
+  categoria: string | null;
   email: string | null;
   telefono: string | null;
   fecha_propuesta: string | null;
@@ -18,7 +19,7 @@ export async function getChallenges(): Promise<Challenge[]> {
     const sb = await createClient();
     const { data } = await sb
       .from("challenges")
-      .select("id,nombre,equipo,email,telefono,fecha_propuesta,lugar,mensaje,leido,created_at")
+      .select("id,nombre,equipo,categoria,email,telefono,fecha_propuesta,lugar,mensaje,leido,created_at")
       .order("created_at", { ascending: false });
     return (data as Challenge[]) ?? [];
   } catch {

@@ -17,7 +17,12 @@ function Tarjeta({ c }: { c: Challenge }) {
             {c.nombre}
             {c.equipo ? ` · ${c.equipo}` : ""}
           </p>
-          <p className="text-sm text-efa-ash">
+          {c.categoria && (
+            <span className="mt-1 inline-block rounded-full bg-efa-bone/10 px-3 py-0.5 text-xs font-semibold uppercase text-efa-bone">
+              {c.categoria}
+            </span>
+          )}
+          <p className="mt-1 text-sm text-efa-ash">
             {[c.email, c.telefono].filter(Boolean).join(" · ") || "Sin contacto"}
           </p>
         </div>

@@ -2,7 +2,6 @@
 
 import { useActionState } from "react";
 import { registerPlayer, type RegistroState } from "@/app/(site)/registro/actions";
-import { CATEGORIAS } from "@/lib/registro-validation";
 
 const initial: RegistroState = { status: "idle" };
 
@@ -48,18 +47,6 @@ export function RegistroForm() {
             aria-invalid={!!err.apellido} className={inputClass} />
           {err.apellido && <p className="mt-2 text-sm text-efa-red">{err.apellido}</p>}
         </div>
-      </div>
-
-      <div>
-        <label htmlFor="categoria" className="text-sm font-medium text-efa-ink">Categoría</label>
-        <select id="categoria" name="categoria" defaultValue={state.values?.categoria ?? ""}
-          disabled={pending} aria-invalid={!!err.categoria} className={inputClass}>
-          <option value="" disabled>Elige una…</option>
-          {CATEGORIAS.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-        {err.categoria && <p className="mt-2 text-sm text-efa-red">{err.categoria}</p>}
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">

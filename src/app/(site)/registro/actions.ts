@@ -17,7 +17,6 @@ export async function registerPlayer(
   const input = {
     nombre: String(formData.get("nombre") ?? ""),
     apellido: String(formData.get("apellido") ?? ""),
-    categoria: String(formData.get("categoria") ?? ""),
     email: String(formData.get("email") ?? ""),
     telefono: String(formData.get("telefono") ?? ""),
   };
@@ -30,7 +29,6 @@ export async function registerPlayer(
   const { error } = await sb.from("players").insert({
     nombre: v.nombre,
     apellido: v.apellido,
-    categoria: v.categoria,
     email: v.email || null,
     telefono: v.telefono || null,
   });

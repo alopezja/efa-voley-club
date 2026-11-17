@@ -17,6 +17,7 @@ export async function sendChallenge(
   const input = {
     nombre: String(formData.get("nombre") ?? ""),
     equipo: String(formData.get("equipo") ?? ""),
+    categoria: String(formData.get("categoria") ?? ""),
     email: String(formData.get("email") ?? ""),
     telefono: String(formData.get("telefono") ?? ""),
     fecha_propuesta: String(formData.get("fecha_propuesta") ?? ""),
@@ -32,6 +33,7 @@ export async function sendChallenge(
   const { error } = await sb.from("challenges").insert({
     nombre: v.nombre,
     equipo: v.equipo || null,
+    categoria: v.categoria,
     email: v.email || null,
     telefono: v.telefono || null,
     fecha_propuesta: v.fecha_propuesta || null,
