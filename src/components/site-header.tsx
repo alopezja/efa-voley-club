@@ -34,7 +34,7 @@ export function SiteHeader() {
             priority
           />
           <span className="font-display text-xl text-efa-bone">
-            EFA <span className="text-efa-red">VOLEY</span>
+            EFA <span className="text-efa-red">VOLEY</span> CLUB
           </span>
         </Link>
 

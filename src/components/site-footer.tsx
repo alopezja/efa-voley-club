@@ -25,7 +25,7 @@ export function SiteFooter() {
               className="h-10 w-10 object-contain"
             />
             <span className="font-display text-lg text-efa-bone">
-              EFA <span className="text-efa-red">VOLEY</span>
+              EFA <span className="text-efa-red">VOLEY</span> CLUB
             </span>
           </div>
           <p className="mt-4 max-w-xs text-sm text-efa-ash">
