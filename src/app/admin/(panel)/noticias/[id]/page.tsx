@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getArticleById } from "@/lib/articles";
 import { ArticleEditor } from "@/components/admin/article-editor";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Editar noticia", robots: { index: false, follow: false } };
 
 export default async function EditarNoticiaPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  await requirePerm("noticias");
   const { id } = await params;
   const article = await getArticleById(id);
   if (!article) notFound();

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export type HorarioState = { status: "idle" | "success" | "error"; message?: string };
@@ -43,7 +43,7 @@ export async function createSchedule(
   _prev: HorarioState,
   formData: FormData
 ): Promise<HorarioState> {
-  await requireAdmin();
+  await requirePerm("horarios");
   const data = fields(formData);
   if (!data.dia) return { status: "error", message: "Elige un día." };
   data.maps_url = await resolveMapsUrl(data.maps_url);
@@ -58,7 +58,7 @@ export async function updateSchedule(
   _prev: HorarioState,
   formData: FormData
 ): Promise<HorarioState> {
-  await requireAdmin();
+  await requirePerm("horarios");
   const id = String(formData.get("id") ?? "");
   if (!id) return { status: "error", message: "Falta el identificador." };
   const data = fields(formData);
@@ -72,7 +72,7 @@ export async function updateSchedule(
 }
 
 export async function deleteSchedule(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("horarios");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const sb = await createClient();

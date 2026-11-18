@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getPlayers, type Player } from "@/lib/players";
 import { approvePlayer, rejectPlayer } from "./actions";
 
@@ -49,7 +49,7 @@ function Fila({ p }: { p: Player }) {
 }
 
 export default async function AdminJugadoresPage() {
-  await requireAdmin();
+  await requirePerm("jugadores");
   const players = await getPlayers();
   const pendientes = players.filter((p) => p.estado === "pendiente");
   const resto = players.filter((p) => p.estado !== "pendiente");

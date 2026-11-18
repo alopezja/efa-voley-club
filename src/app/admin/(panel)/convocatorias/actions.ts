@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { uploadToR2, deleteFromR2, keyFromPublicUrl } from "@/lib/r2";
 import { serverEnv } from "@/lib/env";
@@ -42,7 +42,7 @@ export async function saveConvocatoria(
   _prev: ConvocatoriaState,
   formData: FormData
 ): Promise<ConvocatoriaState> {
-  await requireAdmin();
+  await requirePerm("convocatorias");
   const id = String(formData.get("id") ?? "") || null;
 
   const check = validateConvocatoria({
@@ -104,7 +104,7 @@ export async function saveConvocatoria(
 }
 
 export async function deleteConvocatoria(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("convocatorias");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const sb = await createClient();

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getGalleryItems } from "@/lib/gallery";
 import { GalleryManager } from "@/components/admin/gallery-manager";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Galería", robots: { index: false, follow: false } };
 
 export default async function AdminGaleriaPage() {
-  await requireAdmin();
+  await requirePerm("galeria");
   const items = await getGalleryItems();
   return (
     <div>

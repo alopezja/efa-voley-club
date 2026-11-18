@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getAllConvocatorias, type Convocatoria } from "@/lib/convocatorias";
 import { deleteConvocatoria } from "./actions";
 
@@ -17,7 +17,7 @@ function fecha(c: Convocatoria): string {
 }
 
 export default async function AdminConvocatoriasPage() {
-  await requireAdmin();
+  await requirePerm("convocatorias");
   const items = await getAllConvocatorias();
 
   return (

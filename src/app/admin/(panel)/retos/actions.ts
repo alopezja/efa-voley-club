@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export async function markChallengeRead(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("retos");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const sb = await createClient();
@@ -15,7 +15,7 @@ export async function markChallengeRead(formData: FormData) {
 }
 
 export async function deleteChallenge(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("retos");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const sb = await createClient();

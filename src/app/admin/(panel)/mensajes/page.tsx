@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getMessages, type ContactMessage } from "@/lib/messages";
 import { markMessageRead, deleteMessage } from "./actions";
 
@@ -53,7 +53,7 @@ function Tarjeta({ m }: { m: ContactMessage }) {
 }
 
 export default async function AdminMensajesPage() {
-  await requireAdmin();
+  await requirePerm("mensajes");
   const mensajes = await getMessages();
   const nuevos = mensajes.filter((m) => !m.leido);
 

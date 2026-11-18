@@ -1,12 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { PlayerStatus } from "@/lib/players";
 
 async function setEstado(id: string, estado: PlayerStatus) {
-  const { user } = await requireAdmin();
+  const { user } = await requirePerm("jugadores");
   if (!id) return;
   const sb = await createClient();
   await sb

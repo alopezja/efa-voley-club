@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getSchedules } from "@/lib/schedules";
 import { ScheduleRow, ScheduleAddForm } from "@/components/admin/schedule-forms";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Horarios", robots: { index: false, follow: false } };
 
 export default async function AdminHorariosPage() {
-  await requireAdmin();
+  await requirePerm("horarios");
   const schedules = await getSchedules();
 
   return (

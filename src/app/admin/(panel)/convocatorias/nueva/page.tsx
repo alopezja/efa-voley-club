@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { ConvocatoriaEditor } from "@/components/admin/convocatoria-editor";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Nueva convocatoria", robots: { index: false, follow: false } };
 
 export default async function NuevaConvocatoriaPage() {
-  await requireAdmin();
+  await requirePerm("convocatorias");
   return (
     <div>
       <Link href="/admin/convocatorias" className="text-sm text-efa-ash hover:text-efa-bone">
