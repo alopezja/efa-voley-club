@@ -2,6 +2,7 @@
 
 import { validateRegistro, type RegistroValues } from "@/lib/registro-validation";
 import { createClient } from "@/lib/supabase/server";
+import { sendClubNotification } from "@/lib/email";
 
 export type RegistroState = {
   status: "idle" | "success" | "error";
@@ -40,6 +41,14 @@ export async function registerPlayer(
       values: input,
     };
   }
+
+  await sendClubNotification(`Nuevo registro de jugador — ${v.nombre} ${v.apellido}`, [
+    `Nombre: ${v.nombre} ${v.apellido}`,
+    v.email ? `Correo: ${v.email}` : "",
+    v.telefono ? `Teléfono: ${v.telefono}` : "",
+    "",
+    "Apruébalo en el panel: https://efavoleyclub.com/admin/jugadores",
+  ]);
 
   return { status: "success" };
 }

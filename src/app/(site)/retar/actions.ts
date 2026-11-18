@@ -2,6 +2,7 @@
 
 import { validateChallenge, type ChallengeValues } from "@/lib/challenge-validation";
 import { createClient } from "@/lib/supabase/server";
+import { sendClubNotification } from "@/lib/email";
 
 export type ChallengeState = {
   status: "idle" | "success" | "error";
@@ -48,6 +49,18 @@ export async function sendChallenge(
       values: input,
     };
   }
+
+  await sendClubNotification(`Nuevo reto al club — ${v.nombre}${v.equipo ? ` (${v.equipo})` : ""}`, [
+    `De: ${v.nombre}${v.equipo ? ` — ${v.equipo}` : ""}`,
+    v.categoria ? `Categoría: ${v.categoria}` : "",
+    v.email ? `Correo: ${v.email}` : "",
+    v.telefono ? `Teléfono: ${v.telefono}` : "",
+    v.fecha_propuesta ? `Fecha propuesta: ${v.fecha_propuesta}` : "",
+    v.lugar ? `Lugar: ${v.lugar}` : "",
+    v.mensaje ? `\n${v.mensaje}` : "",
+    "",
+    "Míralo en el panel: https://efavoleyclub.com/admin/retos",
+  ]);
 
   return { status: "success" };
 }

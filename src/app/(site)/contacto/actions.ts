@@ -2,6 +2,7 @@
 
 import { validateContact } from "@/lib/contact-validation";
 import { createClient } from "@/lib/supabase/server";
+import { sendClubNotification } from "@/lib/email";
 
 export type ContactState = {
   status: "idle" | "success" | "error";
@@ -40,7 +41,14 @@ export async function sendContact(
     };
   }
 
-  // TODO: enviar aviso por correo con Resend (fase posterior)
+  await sendClubNotification(`Nuevo mensaje de contacto — ${values.nombre.trim()}`, [
+    `Nombre: ${values.nombre.trim()}`,
+    `Correo: ${values.email.trim()}`,
+    "",
+    values.mensaje.trim(),
+    "",
+    "Míralo en el panel: https://efavoleyclub.com/admin/mensajes",
+  ]);
 
   return { status: "success" };
 }
