@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/section";
 import { getGalleryItems } from "@/lib/gallery";
 import { youtubeId, youtubeThumb } from "@/lib/gallery-validation";
 import { getSchedules, mapEmbedSrc } from "@/lib/schedules";
+import { getPublishedArticles } from "@/lib/articles";
 
 const pilares = [
   {
@@ -28,10 +29,19 @@ const pasos = [
 ];
 
 export default async function Home() {
-  const [galeria, horarios] = await Promise.all([
+  const [galeria, horarios, noticias] = await Promise.all([
     getGalleryItems().then((g) => g.slice(0, 6)),
     getSchedules().then((h) => h.slice(0, 2)),
+    getPublishedArticles(3),
   ]);
+
+  const fechaCorta = (iso: string) => {
+    try {
+      return new Intl.DateTimeFormat("es", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+    } catch {
+      return "";
+    }
+  };
 
   return (
     <>
@@ -129,6 +139,50 @@ export default async function Home() {
           </div>
         </Container>
       </Section>
+
+      {/* ÚLTIMAS NOTICIAS */}
+      {noticias.length > 0 && (
+        <Section tone="light">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="text-3xl text-efa-ink sm:text-4xl">Últimas noticias</h2>
+              <Link
+                href="/noticias"
+                className="border-b-2 border-efa-ink/30 pb-1 font-semibold text-efa-ink transition hover:border-efa-red"
+              >
+                Ver todas
+              </Link>
+            </div>
+            <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {noticias.map((a) => (
+                <Link
+                  key={a.id}
+                  href={`/noticias/${a.slug}`}
+                  className="group flex flex-col overflow-hidden rounded-lg border border-efa-sand bg-white/40 transition hover:border-efa-red"
+                >
+                  <div className="aspect-video overflow-hidden bg-efa-sand">
+                    {a.imagen_portada_url && (
+                      <img
+                        src={a.imagen_portada_url}
+                        alt={a.titulo}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition group-hover:scale-105"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <p className="text-xs uppercase tracking-wide text-efa-ash">
+                      {fechaCorta(a.fecha_publicacion ?? a.created_at)}
+                    </p>
+                    <h3 className="mt-2 font-display text-xl uppercase leading-tight text-efa-ink">{a.titulo}</h3>
+                    {a.resumen && <p className="mt-2 line-clamp-2 text-sm text-efa-ink/70">{a.resumen}</p>}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Container>
+        </Section>
+      )}
 
       {/* CÓMO SUMARTE */}
       <Section tone="light">
