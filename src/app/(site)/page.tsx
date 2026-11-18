@@ -6,6 +6,7 @@ import { getGalleryItems } from "@/lib/gallery";
 import { youtubeId, youtubeThumb } from "@/lib/gallery-validation";
 import { getSchedules, mapEmbedSrc } from "@/lib/schedules";
 import { getPublishedArticles } from "@/lib/articles";
+import { getUpcomingConvocatorias } from "@/lib/convocatorias";
 
 const pilares = [
   {
@@ -29,15 +30,23 @@ const pasos = [
 ];
 
 export default async function Home() {
-  const [galeria, horarios, noticias] = await Promise.all([
+  const [galeria, horarios, noticias, convocatorias] = await Promise.all([
     getGalleryItems().then((g) => g.slice(0, 6)),
     getSchedules().then((h) => h.slice(0, 2)),
     getPublishedArticles(3),
+    getUpcomingConvocatorias(2),
   ]);
 
   const fechaCorta = (iso: string) => {
     try {
       return new Intl.DateTimeFormat("es", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+    } catch {
+      return "";
+    }
+  };
+  const fechaConvo = (iso: string) => {
+    try {
+      return new Intl.DateTimeFormat("es", { dateStyle: "full", timeStyle: "short" }).format(new Date(iso));
     } catch {
       return "";
     }
@@ -139,6 +148,39 @@ export default async function Home() {
           </div>
         </Container>
       </Section>
+
+      {/* PRÓXIMAS CONVOCATORIAS */}
+      {convocatorias.length > 0 && (
+        <Section tone="dark">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="text-3xl text-efa-bone sm:text-4xl">Próximas convocatorias</h2>
+              <Link
+                href="/convocatorias"
+                className="border-b-2 border-efa-chalk/30 pb-1 font-semibold text-efa-bone transition hover:border-efa-red"
+              >
+                Ver todas
+              </Link>
+            </div>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              {convocatorias.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/convocatorias/${c.slug}`}
+                  className="group rounded-lg border border-efa-ash/30 p-6 transition hover:border-efa-red"
+                >
+                  {c.fecha_torneo && (
+                    <p className="text-xs uppercase tracking-wide text-efa-red">{fechaConvo(c.fecha_torneo)}</p>
+                  )}
+                  <h3 className="mt-2 font-display text-2xl uppercase leading-tight text-efa-bone">{c.titulo}</h3>
+                  <p className="mt-1 text-sm text-efa-ash">{[c.lugar, c.categoria].filter(Boolean).join(" · ")}</p>
+                  <span className="mt-4 inline-block text-sm font-semibold text-efa-red">Ver convocatoria →</span>
+                </Link>
+              ))}
+            </div>
+          </Container>
+        </Section>
+      )}
 
       {/* ÚLTIMAS NOTICIAS */}
       {noticias.length > 0 && (
