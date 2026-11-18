@@ -5,10 +5,11 @@ const links = [
   { href: "/admin/jugadores", label: "Jugadores" },
   { href: "/admin/retos", label: "Retos" },
   { href: "/admin/noticias", label: "Noticias" },
+  { href: "/admin/convocatorias", label: "Convocatorias" },
   { href: "/admin/galeria", label: "Galería" },
   { href: "/admin/horarios", label: "Horarios" },
 ];
-const upcoming = ["Convocatorias", "Mensajes"];
+const upcoming = ["Mensajes"];
 
 export function AdminNav({ email }: { email?: string | null }) {
   return (
