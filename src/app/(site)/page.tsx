@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { getGalleryItems } from "@/lib/gallery";
 import { youtubeId, youtubeThumb } from "@/lib/gallery-validation";
-import { getSchedules } from "@/lib/schedules";
+import { getSchedules, mapEmbedSrc } from "@/lib/schedules";
 
 const pilares = [
   {
@@ -160,24 +160,43 @@ export default async function Home() {
           <Container>
             <h2 className="text-3xl text-efa-bone sm:text-4xl">Dónde y cuándo jugamos</h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
-              {horarios.map((h) => (
-                <div key={h.id} className="rounded-lg border border-efa-ash/30 p-6">
-                  <p className="font-display text-2xl uppercase text-efa-red">{h.dia}</p>
-                  {h.lugar && <p className="mt-2 text-xl text-efa-bone">{h.lugar}</p>}
-                  {h.horario && <p className="mt-1 text-efa-ash">{h.horario}</p>}
-                  {h.descripcion && <p className="mt-1 text-sm text-efa-ash">{h.descripcion}</p>}
-                  {h.maps_url && (
-                    <a
-                      href={h.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-efa-red hover:underline"
-                    >
-                      📍 Cómo llegar
-                    </a>
-                  )}
-                </div>
-              ))}
+              {horarios.map((h) => {
+                const mapa = mapEmbedSrc(h);
+                return (
+                  <div
+                    key={h.id}
+                    className="grid overflow-hidden rounded-lg border border-efa-ash/30 sm:grid-cols-[1fr_220px]"
+                  >
+                    <div className="p-6">
+                      <p className="font-display text-2xl uppercase text-efa-red">{h.dia}</p>
+                      {h.lugar && <p className="mt-2 text-xl text-efa-bone">{h.lugar}</p>}
+                      {h.horario && <p className="mt-1 text-efa-ash">{h.horario}</p>}
+                      {h.descripcion && <p className="mt-1 text-sm text-efa-ash">{h.descripcion}</p>}
+                      {h.maps_url && (
+                        <a
+                          href={h.maps_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-efa-red hover:underline"
+                        >
+                          📍 Cómo llegar
+                        </a>
+                      )}
+                    </div>
+                    {mapa && (
+                      <div className="relative min-h-[180px] border-t border-efa-ash/30 sm:border-l sm:border-t-0">
+                        <iframe
+                          src={mapa}
+                          title={`Mapa de ${h.lugar ?? h.dia}`}
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          className="absolute inset-0 h-full w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </Container>
         </Section>
