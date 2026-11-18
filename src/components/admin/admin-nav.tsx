@@ -1,18 +1,25 @@
 import Link from "next/link";
+import type { Rol } from "@/lib/auth";
+import { SECCIONES } from "@/lib/permisos";
 
-const links = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/jugadores", label: "Jugadores" },
-  { href: "/admin/retos", label: "Retos" },
-  { href: "/admin/noticias", label: "Noticias" },
-  { href: "/admin/convocatorias", label: "Convocatorias" },
-  { href: "/admin/mensajes", label: "Mensajes" },
-  { href: "/admin/galeria", label: "Galería" },
-  { href: "/admin/horarios", label: "Horarios" },
-];
-const upcoming: string[] = [];
+export function AdminNav({
+  email,
+  role,
+  permisos,
+}: {
+  email?: string | null;
+  role: Rol;
+  permisos: string[];
+}) {
+  const esSuper = role === "super_admin";
 
-export function AdminNav({ email }: { email?: string | null }) {
+  // Dashboard siempre; las secciones según permisos; Equipo solo super admin.
+  const links: { href: string; label: string }[] = [{ href: "/admin", label: "Dashboard" }];
+  for (const s of SECCIONES) {
+    if (esSuper || permisos.includes(s.key)) links.push({ href: s.href, label: s.label });
+  }
+  if (esSuper) links.push({ href: "/admin/equipo", label: "Equipo" });
+
   return (
     <nav
       aria-label="Panel de administración"
@@ -30,18 +37,11 @@ export function AdminNav({ email }: { email?: string | null }) {
           {l.label}
         </Link>
       ))}
-      {upcoming.map((label) => (
-        <span
-          key={label}
-          aria-disabled="true"
-          className="flex items-center justify-between rounded-md px-4 py-3 text-base text-efa-ash"
-        >
-          {label}
-          <span className="text-xs uppercase tracking-wide">próximamente</span>
-        </span>
-      ))}
       <div className="mt-4 border-t border-efa-ash/30 pt-4 md:mt-auto">
-        {email && <p className="mb-3 truncate text-sm text-efa-ash">{email}</p>}
+        {email && <p className="truncate text-sm text-efa-ash">{email}</p>}
+        <p className="mb-3 text-xs uppercase tracking-wide text-efa-ash/70">
+          {esSuper ? "Super administrador" : "Administrador"}
+        </p>
         <form action="/admin/logout" method="post">
           <button
             type="submit"

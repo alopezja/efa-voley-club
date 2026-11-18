@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getAllArticles } from "@/lib/articles";
 import { deleteArticle } from "./actions";
 
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Noticias", robots: { index: false, follow: false } };
 
 export default async function AdminNoticiasPage() {
-  await requireAdmin();
+  await requirePerm("noticias");
   const articles = await getAllArticles();
 
   return (

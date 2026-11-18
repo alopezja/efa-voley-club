@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getPerfil, esAdmin } from "@/lib/auth";
 import { LoginForm } from "@/components/admin/login-form";
 
 export const metadata: Metadata = {
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminLoginPage() {
-  const user = await getCurrentUser();
-  if (user) redirect("/admin");
+  const perfil = await getPerfil();
+  if (perfil) redirect(esAdmin(perfil) ? "/admin" : "/");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-efa-ink px-4 py-12 text-efa-bone">

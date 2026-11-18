@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { uploadToR2, deleteFromR2, keyFromPublicUrl } from "@/lib/r2";
 import { serverEnv } from "@/lib/env";
@@ -15,7 +15,7 @@ function revalidateGaleria() {
 }
 
 export async function uploadPhoto(_prev: GalleryActionState, formData: FormData): Promise<GalleryActionState> {
-  await requireAdmin();
+  await requirePerm("galeria");
   const file = formData.get("archivo");
   if (!(file instanceof File) || file.size === 0)
     return { status: "error", message: "Elige una imagen." };
@@ -47,7 +47,7 @@ export async function uploadPhoto(_prev: GalleryActionState, formData: FormData)
 }
 
 export async function addYoutubeVideo(_prev: GalleryActionState, formData: FormData): Promise<GalleryActionState> {
-  await requireAdmin();
+  await requirePerm("galeria");
   const enlace = (formData.get("enlace") as string) ?? "";
   const check = validateYoutube({ enlace });
   if (!check.ok) return { status: "error", message: Object.values(check.errors)[0] };
@@ -67,7 +67,7 @@ export async function addYoutubeVideo(_prev: GalleryActionState, formData: FormD
 }
 
 export async function deleteGalleryItem(formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requirePerm("galeria");
   const id = formData.get("id") as string;
   if (!id) return;
 

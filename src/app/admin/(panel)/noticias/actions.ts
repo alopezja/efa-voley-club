@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { uploadToR2, deleteFromR2, keyFromPublicUrl } from "@/lib/r2";
 import { serverEnv } from "@/lib/env";
@@ -38,7 +38,7 @@ function revalidar(slug?: string) {
 }
 
 export async function saveArticle(_prev: ArticleState, formData: FormData): Promise<ArticleState> {
-  await requireAdmin();
+  await requirePerm("noticias");
   const id = String(formData.get("id") ?? "") || null;
 
   const check = validateArticle({
@@ -100,7 +100,7 @@ export async function saveArticle(_prev: ArticleState, formData: FormData): Prom
 }
 
 export async function deleteArticle(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("noticias");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const sb = await createClient();

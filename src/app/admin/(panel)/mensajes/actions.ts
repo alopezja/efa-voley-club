@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 function revalidar() {
@@ -10,7 +10,7 @@ function revalidar() {
 }
 
 export async function markMessageRead(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("mensajes");
   const id = String(formData.get("id") ?? "");
   const leido = String(formData.get("leido") ?? "true") === "true";
   if (!id) return;
@@ -20,7 +20,7 @@ export async function markMessageRead(formData: FormData) {
 }
 
 export async function deleteMessage(formData: FormData) {
-  await requireAdmin();
+  await requirePerm("mensajes");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const sb = createAdminClient();

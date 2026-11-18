@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdmin } from "@/lib/auth";
+import { requirePerm } from "@/lib/auth";
 import { getChallenges, type Challenge } from "@/lib/challenges";
 import { markChallengeRead, deleteChallenge } from "./actions";
 
@@ -59,7 +59,7 @@ function Tarjeta({ c }: { c: Challenge }) {
 }
 
 export default async function AdminRetosPage() {
-  await requireAdmin();
+  await requirePerm("retos");
   const challenges = await getChallenges();
   const nuevos = challenges.filter((c) => !c.leido);
 
