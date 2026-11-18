@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
+export type HorarioState = { status: "idle" | "success" | "error"; message?: string };
+
 function fields(formData: FormData) {
   return {
     dia: String(formData.get("dia") ?? "").trim(),
@@ -15,29 +17,58 @@ function fields(formData: FormData) {
   };
 }
 
+// Los enlaces cortos de Maps (maps.app.goo.gl / goo.gl) no traen coordenadas.
+// Al guardar, seguimos el redireccionamiento y guardamos el enlace completo
+// (que sí trae @lat,lng) para que el mapa de la portada quede en el punto exacto.
+async function resolveMapsUrl(url: string | null): Promise<string | null> {
+  if (!url) return null;
+  if (!/^https?:\/\/(maps\.app\.goo\.gl|goo\.gl)\//i.test(url)) return url;
+  try {
+    const res = await fetch(url, { redirect: "follow" });
+    if (res.url && /google\.[^/]+\/maps/i.test(res.url) && /@-?\d+\.\d+,-?\d+\.\d+/.test(res.url)) {
+      return res.url;
+    }
+  } catch {
+    /* si falla, se guarda el enlace original */
+  }
+  return url;
+}
+
 function revalidar() {
   revalidatePath("/admin/horarios");
   revalidatePath("/");
 }
 
-export async function createSchedule(formData: FormData) {
+export async function createSchedule(
+  _prev: HorarioState,
+  formData: FormData
+): Promise<HorarioState> {
   await requireAdmin();
   const data = fields(formData);
-  if (!data.dia) return;
+  if (!data.dia) return { status: "error", message: "Elige un día." };
+  data.maps_url = await resolveMapsUrl(data.maps_url);
   const sb = await createClient();
-  await sb.from("schedules").insert(data);
+  const { error } = await sb.from("schedules").insert(data);
+  if (error) return { status: "error", message: "No se pudo agregar. Intenta de nuevo." };
   revalidar();
+  return { status: "success", message: "Horario agregado ✓" };
 }
 
-export async function updateSchedule(formData: FormData) {
+export async function updateSchedule(
+  _prev: HorarioState,
+  formData: FormData
+): Promise<HorarioState> {
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
-  if (!id) return;
+  if (!id) return { status: "error", message: "Falta el identificador." };
   const data = fields(formData);
-  if (!data.dia) return;
+  if (!data.dia) return { status: "error", message: "Elige un día." };
+  data.maps_url = await resolveMapsUrl(data.maps_url);
   const sb = await createClient();
-  await sb.from("schedules").update(data).eq("id", id);
+  const { error } = await sb.from("schedules").update(data).eq("id", id);
+  if (error) return { status: "error", message: "No se pudo guardar. Intenta de nuevo." };
   revalidar();
+  return { status: "success", message: "Guardado ✓" };
 }
 
 export async function deleteSchedule(formData: FormData) {
