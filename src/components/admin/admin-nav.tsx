@@ -6,10 +6,11 @@ const links = [
   { href: "/admin/retos", label: "Retos" },
   { href: "/admin/noticias", label: "Noticias" },
   { href: "/admin/convocatorias", label: "Convocatorias" },
+  { href: "/admin/mensajes", label: "Mensajes" },
   { href: "/admin/galeria", label: "Galería" },
   { href: "/admin/horarios", label: "Horarios" },
 ];
-const upcoming = ["Mensajes"];
+const upcoming: string[] = [];
 
 export function AdminNav({ email }: { email?: string | null }) {
   return (
