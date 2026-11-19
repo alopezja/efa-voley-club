@@ -13,6 +13,30 @@ export type AdminPlayerState = {
   errors?: Record<string, string>;
 };
 
+// Agrega al jugador a un equipo (si no está ya).
+export async function agregarAEquipo(formData: FormData): Promise<void> {
+  await requirePerm("jugadores");
+  const playerId = String(formData.get("playerId") ?? "");
+  const teamId = String(formData.get("teamId") ?? "");
+  if (!playerId || !teamId) return;
+  const admin = createAdminClient();
+  await admin
+    .from("team_members")
+    .upsert({ team_id: teamId, player_id: playerId }, { onConflict: "team_id,player_id", ignoreDuplicates: true });
+  revalidatePath(`/admin/jugadores/${playerId}`);
+}
+
+// Quita al jugador de un equipo.
+export async function quitarDeEquipo(formData: FormData): Promise<void> {
+  await requirePerm("jugadores");
+  const playerId = String(formData.get("playerId") ?? "");
+  const teamId = String(formData.get("teamId") ?? "");
+  if (!playerId || !teamId) return;
+  const admin = createAdminClient();
+  await admin.from("team_members").delete().eq("team_id", teamId).eq("player_id", playerId);
+  revalidatePath(`/admin/jugadores/${playerId}`);
+}
+
 const COLORES = ["roja", "negra", "ambas"];
 const TALLAS = ["XS", "S", "M", "L", "XL", "XXL"];
 const MANOS = ["diestro", "zurdo", "no_se"];
