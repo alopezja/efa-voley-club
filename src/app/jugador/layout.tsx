@@ -28,6 +28,12 @@ export default async function JugadorLayout({ children }: { children: React.Reac
           <Link href="/jugador/perfil" className="font-semibold text-efa-bone hover:text-efa-red">
             Mi perfil
           </Link>
+          <Link href="/jugador/equipo" className="hidden font-semibold text-efa-bone hover:text-efa-red sm:inline">
+            Mi equipo
+          </Link>
+          <Link href="/jugador/carne" className="hidden font-semibold text-efa-bone hover:text-efa-red sm:inline">
+            Carné
+          </Link>
           <form action="/jugador/logout" method="post">
             <button className="rounded-md border border-efa-ash/50 px-3 py-1.5 font-semibold text-efa-bone transition hover:border-efa-red hover:text-efa-red">
               Salir

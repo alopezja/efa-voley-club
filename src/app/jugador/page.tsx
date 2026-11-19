@@ -8,6 +8,10 @@ import { getUpcomingGames, getMisAsistencias } from "@/lib/games";
 import { GameCard } from "@/components/jugador/game-card";
 import { getConvocatoriasDeJugador } from "@/lib/convocados";
 import { ConvocadoBanner } from "@/components/jugador/convocado-banner";
+import { getCumpleanosDelMes, getResumenLogros } from "@/lib/comunidad";
+import { calcularLogros } from "@/lib/logros";
+import { LogrosStrip } from "@/components/jugador/logros-strip";
+import { CumpleanosCard } from "@/components/jugador/cumpleanos-card";
 
 export const dynamic = "force-dynamic";
 
@@ -34,11 +38,14 @@ export default async function JugadorHomePage() {
 
   const { completeness, memberships } = await getMiCompletitud(player);
   const completo = completeness.pct >= 100;
-  const [games, asistencias, convocado] = await Promise.all([
+  const [games, asistencias, convocado, cumples, resumen] = await Promise.all([
     getUpcomingGames(4),
     getMisAsistencias(player.id),
     getConvocatoriasDeJugador(player.id),
+    getCumpleanosDelMes(),
+    getResumenLogros(player.id),
   ]);
+  const logros = calcularLogros(resumen);
 
   return (
     <div className="space-y-8">
@@ -91,6 +98,10 @@ export default async function JugadorHomePage() {
           </div>
         )}
       </section>
+
+      <LogrosStrip logros={logros} />
+
+      <CumpleanosCard cumples={cumples} />
     </div>
   );
 }
