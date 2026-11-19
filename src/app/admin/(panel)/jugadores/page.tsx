@@ -3,6 +3,7 @@ import { requirePerm } from "@/lib/auth";
 import { getPlayersAdmin, type PlayerAdmin } from "@/lib/players";
 import { getTeams } from "@/lib/teams";
 import { ApprovePlayerRow } from "@/components/admin/approve-player-row";
+import { InvitePlayerRow } from "@/components/admin/invite-player-row";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Jugadores", robots: { index: false, follow: false } };
@@ -48,7 +49,8 @@ export default async function AdminJugadoresPage() {
   await requirePerm("jugadores");
   const [players, teams] = await Promise.all([getPlayersAdmin(), getTeams()]);
   const pendientes = players.filter((p) => p.estado === "pendiente");
-  const resto = players.filter((p) => p.estado !== "pendiente");
+  const aprobados = players.filter((p) => p.estado === "aprobado");
+  const rechazados = players.filter((p) => p.estado === "rechazado");
 
   return (
     <div>
@@ -67,11 +69,22 @@ export default async function AdminJugadoresPage() {
         )}
       </section>
 
-      {resto.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-2xl text-efa-bone">Revisados ({resto.length})</h2>
+      {aprobados.length > 0 && (
+        <section className="mb-10">
+          <h2 className="mb-4 text-2xl text-efa-bone">Aprobados ({aprobados.length})</h2>
           <div className="space-y-3">
-            {resto.map((p) => (
+            {aprobados.map((p) => (
+              <InvitePlayerRow key={p.id} player={p} teams={teams} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {rechazados.length > 0 && (
+        <section>
+          <h2 className="mb-4 text-2xl text-efa-bone">Rechazados ({rechazados.length})</h2>
+          <div className="space-y-3">
+            {rechazados.map((p) => (
               <FilaRevisado key={p.id} p={p} />
             ))}
           </div>

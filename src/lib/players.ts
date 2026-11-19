@@ -13,7 +13,7 @@ export type Player = {
   created_at: string;
 };
 
-export type PlayerAdmin = Player & { pct: number };
+export type PlayerAdmin = Player & { pct: number; equipos: { nombre: string; tipo: string }[] };
 
 export async function getPlayers(): Promise<Player[]> {
   try {
@@ -35,13 +35,18 @@ export async function getPlayersAdmin(): Promise<PlayerAdmin[]> {
     const { data } = await sb
       .from("players")
       .select(
-        "id,nombre,apellido,email,telefono,estado,created_at,foto_url,posiciones,experiencia,fecha_nacimiento,eps,contacto_emergencia,mano_dominante,disponibilidad,quiere_camiseta,camiseta_color,camiseta_talla,team_members(numero)"
+        "id,nombre,apellido,email,telefono,estado,created_at,foto_url,posiciones,experiencia,fecha_nacimiento,eps,contacto_emergencia,mano_dominante,disponibilidad,quiere_camiseta,camiseta_color,camiseta_talla,team_members(numero,teams(nombre,tipo))"
       )
       .order("created_at", { ascending: false });
 
     return (data ?? []).map((p) => {
-      const tm = p.team_members as unknown as { numero: number | null }[] | null;
+      const tm = p.team_members as unknown as
+        | { numero: number | null; teams: { nombre: string; tipo: string } | null }[]
+        | null;
       const tieneNumero = (tm ?? []).some((m) => m.numero != null);
+      const equipos = (tm ?? [])
+        .map((m) => m.teams)
+        .filter((t): t is { nombre: string; tipo: string } => !!t);
       const pct = computeCompleteness({
         foto_url: p.foto_url,
         posiciones: (p.posiciones as string[]) ?? [],
@@ -65,6 +70,7 @@ export async function getPlayersAdmin(): Promise<PlayerAdmin[]> {
         estado: p.estado as PlayerStatus,
         created_at: p.created_at,
         pct,
+        equipos,
       };
     });
   } catch {
