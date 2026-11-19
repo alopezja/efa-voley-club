@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Rol } from "@/lib/auth";
 import { SECCIONES } from "@/lib/permisos";
 
@@ -12,6 +15,11 @@ export function AdminNav({
   permisos: string[];
 }) {
   const esSuper = role === "super_admin";
+  const pathname = usePathname();
+
+  // Dashboard activo solo exacto; las demás también en sus sub-páginas (ej. /admin/jugadores/[id]).
+  const isActive = (href: string) =>
+    href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(`${href}/`);
 
   // Dashboard siempre; las secciones según permisos; Equipo solo super admin.
   const links: { href: string; label: string }[] = [{ href: "/admin", label: "Dashboard" }];
@@ -31,7 +39,7 @@ export function AdminNav({
           key={l.href}
           href={l.href}
           className={`block rounded-md px-4 py-3 text-base font-semibold ${
-            l.href === "/admin" ? "bg-efa-red text-efa-chalk" : "text-efa-bone hover:text-efa-red"
+            isActive(l.href) ? "bg-efa-red text-efa-chalk" : "text-efa-bone hover:text-efa-red"
           }`}
         >
           {l.label}
