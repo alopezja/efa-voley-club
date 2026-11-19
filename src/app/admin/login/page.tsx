@@ -11,7 +11,9 @@ export const metadata: Metadata = {
 
 export default async function AdminLoginPage() {
   const perfil = await getPerfil();
-  if (perfil) redirect(esAdmin(perfil) ? "/admin" : "/");
+  // Solo redirige si YA es admin; si hay una sesión de jugador, mostramos el
+  // formulario para que pueda iniciar sesión con la cuenta de administrador.
+  if (perfil && esAdmin(perfil)) redirect("/admin");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-efa-ink px-4 py-12 text-efa-bone">

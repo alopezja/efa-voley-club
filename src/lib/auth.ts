@@ -77,7 +77,9 @@ export async function requireAdmin() {
       }
     : null;
 
-  if (!perfil || !esAdmin(perfil)) redirect("/");
+  // Un no-admin (jugador) que entra a /admin va al login de admin, donde puede
+  // iniciar sesión con la cuenta de administrador (reemplaza la sesión actual).
+  if (!perfil || !esAdmin(perfil)) redirect("/admin/login");
 
   return { user, profile: perfil };
 }

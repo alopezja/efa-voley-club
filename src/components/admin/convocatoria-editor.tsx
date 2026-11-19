@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { saveConvocatoria, type ConvocatoriaState } from "@/app/admin/(panel)/convocatorias/actions";
 import { compressImage } from "@/lib/compress-image";
 import type { Convocatoria } from "@/lib/convocatorias";
+import { labelPosicion } from "@/lib/positions";
 
 const initial: ConvocatoriaState = { status: "idle" };
 
@@ -34,7 +35,13 @@ function SaveBtn() {
   );
 }
 
-type PlayerLite = { id: string; nombre: string; apellido: string };
+type PlayerLite = {
+  id: string;
+  nombre: string;
+  apellido: string;
+  numeros?: number[];
+  posiciones?: string[];
+};
 
 export function ConvocatoriaEditor({
   convocatoria,
@@ -133,18 +140,29 @@ export function ConvocatoriaEditor({
             <p className="text-sm text-efa-ash">No hay jugadores aprobados todavía.</p>
           ) : (
             <div className="grid max-h-56 grid-cols-1 gap-1 overflow-y-auto rounded-md border border-efa-ash/30 p-3 sm:grid-cols-2">
-              {players.map((p) => (
-                <label key={p.id} className="flex items-center gap-2 text-sm text-efa-bone">
-                  <input
-                    type="checkbox"
-                    name="convocados"
-                    value={p.id}
-                    defaultChecked={convocadosIds.includes(p.id)}
-                    className="h-4 w-4 accent-efa-red"
-                  />
-                  {p.nombre} {p.apellido}
-                </label>
-              ))}
+              {players.map((p) => {
+                const nums = (p.numeros ?? []).map((n) => `#${n}`).join(" ");
+                const pos = (p.posiciones ?? [])
+                  .filter((x) => x !== "no_se")
+                  .map(labelPosicion)
+                  .join(", ");
+                const detalle = [nums, pos].filter(Boolean).join(" · ");
+                return (
+                  <label key={p.id} className="flex items-center gap-2 text-sm text-efa-bone">
+                    <input
+                      type="checkbox"
+                      name="convocados"
+                      value={p.id}
+                      defaultChecked={convocadosIds.includes(p.id)}
+                      className="h-4 w-4 shrink-0 accent-efa-red"
+                    />
+                    <span>
+                      {p.nombre} {p.apellido}
+                      {detalle && <span className="text-efa-ash"> · {detalle}</span>}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           )}
         </div>

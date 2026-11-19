@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePerm } from "@/lib/auth";
 import { getConvocatoriaById } from "@/lib/convocatorias";
-import { getAprobadosBasico } from "@/lib/players";
+import { getAprobadosParaConvocar } from "@/lib/players";
 import { getConvocadosIds } from "@/lib/convocados";
 import { ConvocatoriaEditor } from "@/components/admin/convocatoria-editor";
 
@@ -15,7 +15,7 @@ export default async function EditarConvocatoriaPage({ params }: { params: Promi
   const { id } = await params;
   const convocatoria = await getConvocatoriaById(id);
   if (!convocatoria) notFound();
-  const [players, convocadosIds] = await Promise.all([getAprobadosBasico(), getConvocadosIds(id)]);
+  const [players, convocadosIds] = await Promise.all([getAprobadosParaConvocar(), getConvocadosIds(id)]);
 
   return (
     <div>

@@ -43,6 +43,38 @@ export async function getAprobadosBasico(): Promise<{ id: string; nombre: string
   }
 }
 
+export type AprobadoPick = {
+  id: string;
+  nombre: string;
+  apellido: string;
+  numeros: number[];
+  posiciones: string[];
+};
+
+// Aprobados con número(s) y posiciones, para el selector de convocados.
+export async function getAprobadosParaConvocar(): Promise<AprobadoPick[]> {
+  try {
+    const sb = await createClient();
+    const { data } = await sb
+      .from("players")
+      .select("id,nombre,apellido,posiciones,team_members(numero)")
+      .eq("estado", "aprobado")
+      .order("nombre", { ascending: true });
+    return (data ?? []).map((p) => {
+      const tm = p.team_members as unknown as { numero: number | null }[] | null;
+      return {
+        id: p.id,
+        nombre: p.nombre,
+        apellido: p.apellido,
+        numeros: (tm ?? []).map((m) => m.numero).filter((n): n is number => n != null),
+        posiciones: (p.posiciones as string[]) ?? [],
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
 // Jugadores con su % de perfil (para el panel admin).
 export async function getPlayersAdmin(): Promise<PlayerAdmin[]> {
   try {
