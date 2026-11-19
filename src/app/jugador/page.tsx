@@ -6,6 +6,8 @@ import { CompletenessRing } from "@/components/jugador/completeness-ring";
 import { ProfileReadyCard } from "@/components/jugador/profile-ready-card";
 import { getUpcomingGames, getMisAsistencias } from "@/lib/games";
 import { GameCard } from "@/components/jugador/game-card";
+import { getConvocatoriasDeJugador } from "@/lib/convocados";
+import { ConvocadoBanner } from "@/components/jugador/convocado-banner";
 
 export const dynamic = "force-dynamic";
 
@@ -32,10 +34,16 @@ export default async function JugadorHomePage() {
 
   const { completeness, memberships } = await getMiCompletitud(player);
   const completo = completeness.pct >= 100;
-  const [games, asistencias] = await Promise.all([getUpcomingGames(4), getMisAsistencias(player.id)]);
+  const [games, asistencias, convocado] = await Promise.all([
+    getUpcomingGames(4),
+    getMisAsistencias(player.id),
+    getConvocatoriasDeJugador(player.id),
+  ]);
 
   return (
     <div className="space-y-8">
+      <ConvocadoBanner convocatorias={convocado} />
+
       <div>
         <h1 className="text-3xl sm:text-4xl">
           ¡Hola, {player.nombre}! 🏐

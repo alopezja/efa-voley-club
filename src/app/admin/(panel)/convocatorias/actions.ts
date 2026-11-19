@@ -8,6 +8,7 @@ import { uploadToR2, deleteFromR2, keyFromPublicUrl } from "@/lib/r2";
 import { serverEnv } from "@/lib/env";
 import { slugify } from "@/lib/slug";
 import { validateConvocatoria } from "@/lib/convocatoria-validation";
+import { syncConvocados } from "@/lib/convocados";
 import { validatePhotoMeta } from "@/lib/gallery-validation";
 
 export type ConvocatoriaState = {
@@ -95,13 +96,19 @@ export async function saveConvocatoria(
     updated_at: new Date().toISOString(),
   };
 
+  const convocados = formData.getAll("convocados").map((x) => String(x));
+
+  let convId = id;
   if (id) {
     const { error } = await sb.from("convocatorias").update(row).eq("id", id);
     if (error) return { status: "error", message: "No se pudo guardar. Intenta de nuevo." };
   } else {
-    const { error } = await sb.from("convocatorias").insert(row);
-    if (error) return { status: "error", message: "No se pudo crear. Intenta de nuevo." };
+    const { data, error } = await sb.from("convocatorias").insert(row).select("id").single();
+    if (error || !data) return { status: "error", message: "No se pudo crear. Intenta de nuevo." };
+    convId = data.id;
   }
+
+  if (convId) await syncConvocados(convId, convocados);
 
   revalidar(slug);
   redirect("/admin/convocatorias");

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePerm } from "@/lib/auth";
 import { getConvocatoriaById } from "@/lib/convocatorias";
+import { getAprobadosBasico } from "@/lib/players";
+import { getConvocadosIds } from "@/lib/convocados";
 import { ConvocatoriaEditor } from "@/components/admin/convocatoria-editor";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +15,7 @@ export default async function EditarConvocatoriaPage({ params }: { params: Promi
   const { id } = await params;
   const convocatoria = await getConvocatoriaById(id);
   if (!convocatoria) notFound();
+  const [players, convocadosIds] = await Promise.all([getAprobadosBasico(), getConvocadosIds(id)]);
 
   return (
     <div>
@@ -20,7 +23,7 @@ export default async function EditarConvocatoriaPage({ params }: { params: Promi
         ← Volver a convocatorias
       </Link>
       <h1 className="mb-8 mt-2 text-4xl">Editar convocatoria</h1>
-      <ConvocatoriaEditor convocatoria={convocatoria} />
+      <ConvocatoriaEditor convocatoria={convocatoria} players={players} convocadosIds={convocadosIds} />
     </div>
   );
 }

@@ -28,6 +28,21 @@ export async function getPlayers(): Promise<Player[]> {
   }
 }
 
+// Jugadores aprobados (básico) para selectores, p. ej. convocados.
+export async function getAprobadosBasico(): Promise<{ id: string; nombre: string; apellido: string }[]> {
+  try {
+    const sb = await createClient();
+    const { data } = await sb
+      .from("players")
+      .select("id,nombre,apellido")
+      .eq("estado", "aprobado")
+      .order("nombre", { ascending: true });
+    return (data as { id: string; nombre: string; apellido: string }[]) ?? [];
+  } catch {
+    return [];
+  }
+}
+
 // Jugadores con su % de perfil (para el panel admin).
 export async function getPlayersAdmin(): Promise<PlayerAdmin[]> {
   try {

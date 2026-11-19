@@ -34,7 +34,17 @@ function SaveBtn() {
   );
 }
 
-export function ConvocatoriaEditor({ convocatoria }: { convocatoria?: Convocatoria }) {
+type PlayerLite = { id: string; nombre: string; apellido: string };
+
+export function ConvocatoriaEditor({
+  convocatoria,
+  players = [],
+  convocadosIds = [],
+}: {
+  convocatoria?: Convocatoria;
+  players?: PlayerLite[];
+  convocadosIds?: string[];
+}) {
   const [state, setState] = useState<ConvocatoriaState>(initial);
   const [preview, setPreview] = useState<string | null>(convocatoria?.imagen_portada_url ?? null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -112,6 +122,31 @@ export function ConvocatoriaEditor({ convocatoria }: { convocatoria?: Convocator
             <option value="borrador">Borrador (no visible)</option>
             <option value="publicado">Publicado</option>
           </select>
+        </div>
+
+        <div>
+          <label className={label}>Convocados oficiales</label>
+          <p className="mb-2 text-xs text-efa-ash/70">
+            A cada jugador marcado le aparecerá un aviso en su portal de que fue convocado.
+          </p>
+          {players.length === 0 ? (
+            <p className="text-sm text-efa-ash">No hay jugadores aprobados todavía.</p>
+          ) : (
+            <div className="grid max-h-56 grid-cols-1 gap-1 overflow-y-auto rounded-md border border-efa-ash/30 p-3 sm:grid-cols-2">
+              {players.map((p) => (
+                <label key={p.id} className="flex items-center gap-2 text-sm text-efa-bone">
+                  <input
+                    type="checkbox"
+                    name="convocados"
+                    value={p.id}
+                    defaultChecked={convocadosIds.includes(p.id)}
+                    className="h-4 w-4 accent-efa-red"
+                  />
+                  {p.nombre} {p.apellido}
+                </label>
+              ))}
+            </div>
+          )}
         </div>
 
         <SaveBtn />
