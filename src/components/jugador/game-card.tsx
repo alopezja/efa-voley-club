@@ -32,7 +32,7 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
   const [sending, setSending] = useState(false);
   const estado = asistencia?.estado ?? null;
   const [sel, setSel] = useState<"voy" | "no_voy" | null>(estado);
-  const [expand, setExpand] = useState(estado === "no_voy");
+  const [expand, setExpand] = useState(false);
   const [zona, setZona] = useState(asistencia?.molestia_zona ?? "");
   const [nivel, setNivel] = useState(asistencia?.molestia_nivel ?? "");
   const [nota, setNota] = useState(asistencia?.molestia_nota ?? "");
@@ -53,6 +53,7 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
     const r = await marcarAsistencia({ status: "idle" }, fd);
     setMsg(r);
     setSending(false);
+    return r;
   }
 
   const btnBase = "rounded-md px-4 py-2 text-sm font-semibold transition disabled:opacity-60";
@@ -144,7 +145,10 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
           <button
             type="button"
             disabled={sending}
-            onClick={() => enviar("no_voy")}
+            onClick={async () => {
+              const r = await enviar("no_voy");
+              if (r.status === "success") setExpand(false); // recoger los detalles
+            }}
             className={`${btnBase} bg-efa-red text-efa-chalk hover:opacity-90`}
           >
             {sending ? "Guardando…" : "Confirmar que no voy"}
