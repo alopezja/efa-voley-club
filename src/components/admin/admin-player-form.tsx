@@ -30,16 +30,23 @@ export function AdminPlayerForm({
   const [quiere, setQuiere] = useState<boolean | null>(player.quiere_camiseta);
   const errors = msg?.errors ?? {};
 
-  async function onSubmit(formData: FormData) {
+  // onSubmit (no `action={fn}`) para que React no resetee el formulario y no se borren los campos.
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (sending) return;
     setSending(true);
-    const r = await guardarJugadorAdmin({ status: "idle" }, formData);
-    setMsg(r);
-    setSending(false);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    try {
+      const formData = new FormData(e.currentTarget);
+      const r = await guardarJugadorAdmin({ status: "idle" }, formData);
+      setMsg(r);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
-    <form action={onSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <input type="hidden" name="id" value={player.id} />
 
       {msg && msg.status !== "idle" && (

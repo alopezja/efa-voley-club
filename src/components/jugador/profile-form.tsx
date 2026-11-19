@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
 import { compressImage } from "@/lib/compress-image";
 import { CourtPositions } from "@/components/jugador/court-positions";
 import { ExperienceSlider } from "@/components/jugador/experience-slider";
@@ -18,19 +17,6 @@ export type MembershipView = {
 
 const input =
   "w-full rounded-md border border-efa-ash/40 bg-efa-ink px-4 py-3 text-base text-efa-bone placeholder:text-efa-ash/60 focus:border-efa-red focus:outline-none";
-
-function Guardar() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="rounded-md bg-efa-red px-6 py-3 text-base font-semibold text-efa-chalk transition hover:opacity-90 disabled:opacity-60"
-    >
-      {pending ? "Guardando…" : "Guardar perfil"}
-    </button>
-  );
-}
 
 function Err({ msg }: { msg?: string }) {
   if (!msg) return null;
@@ -50,6 +36,7 @@ export function ProfileForm({
   const [preview, setPreview] = useState<string | null>(player.foto_url);
   const [fotoError, setFotoError] = useState<string | null>(null);
   const [quiere, setQuiere] = useState<boolean | null>(player.quiere_camiseta);
+  const [sending, setSending] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const DISPLAYABLE = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -63,32 +50,41 @@ export function ProfileForm({
     });
   }
 
-  async function onSubmit(formData: FormData) {
-    const f = fileRef.current?.files?.[0];
-    if (f) {
-      const comp = await compressImage(f);
-      if (!DISPLAYABLE.includes(comp.type)) {
-        // RAW (.dng), HEIC no decodificable, u otro formato que el navegador no muestra.
-        setMsg({
-          status: "error",
-          message: `No pudimos usar "${f.name}". Es un formato que no se puede mostrar en la web (por ejemplo RAW/.dng de iPhone). Sube una foto JPG o PNG.`,
-        });
-        if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-        return;
+  // Usamos onSubmit (no `action={fn}`) para que React NO resetee el formulario
+  // tras enviar: así los campos no se borran si hay un error de validación.
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const f = fileRef.current?.files?.[0];
+      if (f) {
+        const comp = await compressImage(f);
+        if (!DISPLAYABLE.includes(comp.type)) {
+          setMsg({
+            status: "error",
+            message: `No pudimos usar "${f.name}". Es un formato que no se puede mostrar en la web (por ejemplo RAW/.dng de iPhone). Sube una foto JPG o PNG.`,
+          });
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+        formData.set("foto", comp);
+      } else {
+        formData.delete("foto");
       }
-      formData.set("foto", comp);
-    } else {
-      formData.delete("foto");
+      const result = await guardarPerfil({ status: "idle" }, formData);
+      setMsg(result);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setSending(false);
     }
-    const result = await guardarPerfil({ status: "idle" }, formData);
-    setMsg(result);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   const errors = msg?.errors ?? {};
 
   return (
-    <form action={onSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {msg && msg.status !== "idle" && (
         <p
           className={`rounded-md border p-3 text-sm font-semibold ${
@@ -297,7 +293,13 @@ export function ProfileForm({
         </div>
       </section>
 
-      <Guardar />
+      <button
+        type="submit"
+        disabled={sending}
+        className="rounded-md bg-efa-red px-6 py-3 text-base font-semibold text-efa-chalk transition hover:opacity-90 disabled:opacity-60"
+      >
+        {sending ? "Guardando…" : "Guardar perfil"}
+      </button>
     </form>
   );
 }
