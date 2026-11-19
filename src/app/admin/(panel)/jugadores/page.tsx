@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { requirePerm } from "@/lib/auth";
-import { getPlayers, type Player } from "@/lib/players";
+import { getPlayersAdmin, type PlayerAdmin } from "@/lib/players";
 import { getTeams } from "@/lib/teams";
 import { ApprovePlayerRow } from "@/components/admin/approve-player-row";
 
@@ -13,7 +13,7 @@ const estadoStyle: Record<string, string> = {
   rechazado: "bg-efa-red/20 text-efa-red",
 };
 
-function FilaRevisado({ p }: { p: Player }) {
+function FilaRevisado({ p }: { p: PlayerAdmin }) {
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-efa-ash/30 bg-efa-ink p-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -24,16 +24,29 @@ function FilaRevisado({ p }: { p: Player }) {
           {[p.email, p.telefono].filter(Boolean).join(" · ") || "Sin contacto"}
         </p>
       </div>
-      <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${estadoStyle[p.estado] ?? ""}`}>
-        {p.estado}
-      </span>
+      <div className="flex items-center gap-3">
+        {p.estado === "aprobado" && (
+          <span className="flex items-center gap-2" title="Perfil completo">
+            <span className="h-2 w-24 overflow-hidden rounded-full bg-efa-ash/20">
+              <span
+                className={`block h-full ${p.pct >= 100 ? "bg-green-400" : "bg-efa-red"}`}
+                style={{ width: `${p.pct}%` }}
+              />
+            </span>
+            <span className="text-xs font-semibold text-efa-ash">{p.pct}%</span>
+          </span>
+        )}
+        <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${estadoStyle[p.estado] ?? ""}`}>
+          {p.estado}
+        </span>
+      </div>
     </div>
   );
 }
 
 export default async function AdminJugadoresPage() {
   await requirePerm("jugadores");
-  const [players, teams] = await Promise.all([getPlayers(), getTeams()]);
+  const [players, teams] = await Promise.all([getPlayersAdmin(), getTeams()]);
   const pendientes = players.filter((p) => p.estado === "pendiente");
   const resto = players.filter((p) => p.estado !== "pendiente");
 
