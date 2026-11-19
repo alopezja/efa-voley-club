@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getSchedules } from "@/lib/schedules";
 import { getUpcomingConvocatorias } from "@/lib/convocatorias";
-import { proximasFechas, parseHorario, fechaColombia, googleCalendarUrl } from "@/lib/game-dates";
+import { proximasFechas, parseHorario, fechaColombia, googleCalendarUrl, fechaBogota } from "@/lib/game-dates";
 
 export type GameTipo = "entreno" | "convocatoria";
 
@@ -166,6 +166,13 @@ export async function getAsistenciasAdmin(
     // vacío
   }
   return map;
+}
+
+// Juegos que ocurren HOY (hora de Colombia) — para los recordatorios.
+export async function getGamesHoy(): Promise<Game[]> {
+  const all = await getUpcomingGames(50);
+  const hoy = fechaBogota(new Date());
+  return all.filter((g) => g.fecha === hoy);
 }
 
 // Asistencias del jugador indexadas por `key` (tipo:refId:fecha).

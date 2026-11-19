@@ -83,6 +83,11 @@ export function fechaColombia(fecha: string, hora: string): Date {
   return new Date(`${fecha}T${hora}:00${OFFSET}`);
 }
 
+// Fecha de hoy (YYYY-MM-DD) en la zona horaria de Colombia.
+export function fechaBogota(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Bogota" }).format(d);
+}
+
 export function googleCalendarUrl(opts: {
   titulo: string;
   inicio: Date;

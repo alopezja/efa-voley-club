@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { diaAWeekday, proximasFechas, parseHorario, googleCalendarUrl, fechaColombia } from "./game-dates";
+import { diaAWeekday, proximasFechas, parseHorario, googleCalendarUrl, fechaColombia, fechaBogota } from "./game-dates";
 
 describe("game-dates", () => {
   it("mapea días (con acentos y mayúsculas)", () => {
@@ -32,6 +32,12 @@ describe("game-dates", () => {
   it("fechaColombia aplica offset -05:00", () => {
     const d = fechaColombia("2026-11-24", "20:00");
     expect(d.toISOString()).toBe("2026-11-25T01:00:00.000Z");
+  });
+
+  it("fechaBogota aplica la zona de Colombia (UTC-5)", () => {
+    // 2026-11-20 02:00 UTC = 2026-11-19 21:00 en Bogotá
+    expect(fechaBogota(new Date("2026-11-20T02:00:00Z"))).toBe("2026-11-19");
+    expect(fechaBogota(new Date("2026-11-20T12:00:00Z"))).toBe("2026-11-20");
   });
 
   it("googleCalendarUrl arma el enlace", () => {
