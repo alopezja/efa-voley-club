@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export function GoogleButton({ next = "/jugador" }: { next?: string }) {
+export function GoogleButton() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,9 +13,10 @@ export function GoogleButton({ next = "/jugador" }: { next?: string }) {
     try {
       const supabase = createClient();
       const origin = window.location.origin;
+      // Sin `next`: /auth/callback detecta el rol y envía a /admin o /jugador.
       const { error: e } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
+        options: { redirectTo: `${origin}/auth/callback` },
       });
       if (e) {
         setError("No se pudo iniciar con Google. Intenta de nuevo.");

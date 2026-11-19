@@ -36,7 +36,7 @@ export default async function AdminLoginPage() {
         <div className="my-5 flex items-center gap-3 text-xs text-efa-ash">
           <span className="h-px flex-1 bg-efa-ash/30" />o<span className="h-px flex-1 bg-efa-ash/30" />
         </div>
-        <GoogleButton next="/admin" />
+        <GoogleButton />
       </div>
     </div>
   );

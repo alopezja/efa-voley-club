@@ -6,10 +6,12 @@ import { sendAccessLink } from "@/lib/email";
 
 export type AccesoState = { status: "idle" | "success" | "error"; message?: string };
 
+const SUPER_EMAIL = "efavoleyclub@gmail.com";
+
 const OK: AccesoState = {
   status: "success",
   message:
-    "Si tu correo está registrado como jugador, te enviamos un enlace para entrar (revisa también spam).",
+    "Si tu correo está registrado, te enviamos un enlace para entrar (revisa también spam).",
 };
 
 export async function enviarEnlace(_prev: AccesoState, formData: FormData): Promise<AccesoState> {
@@ -20,16 +22,17 @@ export async function enviarEnlace(_prev: AccesoState, formData: FormData): Prom
 
   const admin = createAdminClient();
 
-  // Solo enviamos a jugadores ya aprobados (evita abuso y correos a desconocidos).
-  const { data: player } = await admin
-    .from("players")
-    .select("id, estado")
-    .ilike("email", email)
-    .limit(1)
-    .maybeSingle();
+  // Enviamos solo a cuentas conocidas (evita abuso): jugador aprobado, admin, o super admin.
+  const [{ data: player }, { data: perfil }] = await Promise.all([
+    admin.from("players").select("estado").ilike("email", email).limit(1).maybeSingle(),
+    admin.from("profiles").select("role").ilike("email", email).limit(1).maybeSingle(),
+  ]);
+  const esJugadorAprobado = player?.estado === "aprobado";
+  const esAdmin = perfil?.role === "admin" || perfil?.role === "super_admin";
+  const esSuper = email === SUPER_EMAIL;
 
   // Mensaje neutro siempre (no revelamos si el correo está registrado).
-  if (!player || player.estado !== "aprobado") return OK;
+  if (!esJugadorAprobado && !esAdmin && !esSuper) return OK;
 
   const h = await headers();
   const host = h.get("host") ?? "localhost:3000";
@@ -40,11 +43,12 @@ export async function enviarEnlace(_prev: AccesoState, formData: FormData): Prom
     const { data } = await admin.auth.admin.generateLink({
       type: "magiclink",
       email,
-      options: { redirectTo: `${base}/jugador` },
+      options: { redirectTo: `${base}/auth/callback` },
     });
     const hashed = data?.properties?.hashed_token;
     if (hashed) {
-      const link = `${base}/auth/confirm?token_hash=${hashed}&type=magiclink&next=/jugador`;
+      // Sin `next`: /auth/confirm detecta el rol y envía a /admin o /jugador.
+      const link = `${base}/auth/confirm?token_hash=${hashed}&type=magiclink`;
       await sendAccessLink(email, link);
     }
   } catch {
