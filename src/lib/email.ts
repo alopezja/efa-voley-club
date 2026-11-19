@@ -3,7 +3,7 @@
 // a terceros más allá del contenido del propio mensaje/registro.
 
 const DEST = process.env.CONTACT_NOTIFY_EMAIL || "efavoleyclub@gmail.com";
-const FROM = "EFA Voley Club <onboarding@resend.dev>";
+const FROM = "EFA Voley Club <club@efavoleyclub.com>";
 
 export async function sendClubNotification(subject: string, lines: string[]): Promise<void> {
   const key = process.env.RESEND_API_KEY;
