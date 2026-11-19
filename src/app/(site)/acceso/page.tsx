@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { AccesoForm } from "@/components/jugador/acceso-form";
+import { GoogleButton } from "@/components/auth/google-button";
 
 export const metadata: Metadata = {
   title: "Acceso jugadores",
@@ -26,6 +27,11 @@ export default function AccesoPage() {
         </p>
       </div>
       <AccesoForm />
+
+      <div className="my-5 flex items-center gap-3 text-xs text-efa-ash">
+        <span className="h-px flex-1 bg-efa-ash/30" />o<span className="h-px flex-1 bg-efa-ash/30" />
+      </div>
+      <GoogleButton next="/jugador" />
     </div>
   );
 }

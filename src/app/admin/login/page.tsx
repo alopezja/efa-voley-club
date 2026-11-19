@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getPerfil, esAdmin } from "@/lib/auth";
 import { LoginForm } from "@/components/admin/login-form";
+import { GoogleButton } from "@/components/auth/google-button";
 
 export const metadata: Metadata = {
   title: "Acceso administrador",
@@ -31,6 +32,11 @@ export default async function AdminLoginPage() {
           <p className="text-sm text-efa-ash">Ingresa con tu correo y contraseña.</p>
         </div>
         <LoginForm />
+
+        <div className="my-5 flex items-center gap-3 text-xs text-efa-ash">
+          <span className="h-px flex-1 bg-efa-ash/30" />o<span className="h-px flex-1 bg-efa-ash/30" />
+        </div>
+        <GoogleButton next="/admin" />
       </div>
     </div>
   );
