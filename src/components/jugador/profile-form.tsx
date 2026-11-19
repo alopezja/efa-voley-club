@@ -48,10 +48,14 @@ export function ProfileForm({
 }) {
   const [msg, setMsg] = useState<ProfileState | null>(null);
   const [preview, setPreview] = useState<string | null>(player.foto_url);
+  const [fotoError, setFotoError] = useState<string | null>(null);
   const [quiere, setQuiere] = useState<boolean | null>(player.quiere_camiseta);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const DISPLAYABLE = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFotoError(null);
     const f = e.target.files?.[0];
     setPreview((prev) => {
       if (prev && prev.startsWith("blob:")) URL.revokeObjectURL(prev);
@@ -61,8 +65,21 @@ export function ProfileForm({
 
   async function onSubmit(formData: FormData) {
     const f = fileRef.current?.files?.[0];
-    if (f) formData.set("foto", await compressImage(f));
-    else formData.delete("foto");
+    if (f) {
+      const comp = await compressImage(f);
+      if (!DISPLAYABLE.includes(comp.type)) {
+        // RAW (.dng), HEIC no decodificable, u otro formato que el navegador no muestra.
+        setMsg({
+          status: "error",
+          message: `No pudimos usar "${f.name}". Es un formato que no se puede mostrar en la web (por ejemplo RAW/.dng de iPhone). Sube una foto JPG o PNG.`,
+        });
+        if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      formData.set("foto", comp);
+    } else {
+      formData.delete("foto");
+    }
     const result = await guardarPerfil({ status: "idle" }, formData);
     setMsg(result);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
@@ -93,18 +110,29 @@ export function ProfileForm({
           <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border border-efa-ash/40 bg-efa-ink">
             {preview && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={preview} alt="Vista previa" className="h-20 w-20 object-cover" />
+              <img
+                src={preview}
+                alt="Vista previa"
+                className="h-20 w-20 object-cover"
+                onLoad={() => setFotoError(null)}
+                onError={() =>
+                  setFotoError(
+                    "No pudimos mostrar esa imagen. Si es un RAW/.dng del iPhone, usa una foto JPG o PNG."
+                  )
+                }
+              />
             )}
           </div>
           <input
             id="foto"
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
             onChange={onFileChange}
             className="text-sm text-efa-ash file:mr-3 file:rounded-md file:border-0 file:bg-efa-red file:px-4 file:py-2 file:text-sm file:font-semibold file:text-efa-chalk"
           />
         </div>
+        {fotoError && <p className="mt-2 text-sm font-semibold text-efa-red">{fotoError}</p>}
       </section>
 
       {/* Posiciones en cancha */}
