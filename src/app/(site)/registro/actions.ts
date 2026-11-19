@@ -2,6 +2,7 @@
 
 import { validateRegistro, type RegistroValues } from "@/lib/registro-validation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { sendClubNotification } from "@/lib/email";
 
 export type RegistroState = {
@@ -26,6 +27,26 @@ export async function registerPlayer(
   if (!check.ok) return { status: "error", errors: check.errors, values: input };
 
   const v = check.values;
+
+  // Evitar correos duplicados: un correo solo puede registrarse una vez.
+  // (El registro público no puede leer `players` por RLS, así que usamos service_role.)
+  if (v.email) {
+    const admin = createAdminClient();
+    const { data: dup } = await admin
+      .from("players")
+      .select("id")
+      .ilike("email", v.email)
+      .limit(1)
+      .maybeSingle();
+    if (dup) {
+      return {
+        status: "error",
+        errors: { email: "Ya existe un registro con este correo. Si ya te registraste, espera la aprobación del club." },
+        values: input,
+      };
+    }
+  }
+
   const sb = await createClient();
   const { error } = await sb.from("players").insert({
     nombre: v.nombre,
@@ -35,6 +56,14 @@ export async function registerPlayer(
   });
 
   if (error) {
+    // 23505 = violación de índice único (correo ya registrado, carrera).
+    if ((error as { code?: string }).code === "23505") {
+      return {
+        status: "error",
+        errors: { email: "Ya existe un registro con este correo." },
+        values: input,
+      };
+    }
     return {
       status: "error",
       message: "No pudimos enviar tu registro. Intenta de nuevo en un momento.",
