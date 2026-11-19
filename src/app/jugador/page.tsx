@@ -12,6 +12,7 @@ import { getCumpleanosDelMes, getResumenLogros } from "@/lib/comunidad";
 import { calcularLogros } from "@/lib/logros";
 import { LogrosStrip } from "@/components/jugador/logros-strip";
 import { CumpleanosCard } from "@/components/jugador/cumpleanos-card";
+import { PushToggle } from "@/components/jugador/push-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +106,7 @@ export default async function JugadorHomePage() {
 
         {/* Barra lateral derecha (fija en escritorio, arriba en móvil) */}
         <aside className="order-first space-y-6 lg:order-none lg:sticky lg:top-20">
+          <PushToggle />
           <LogrosStrip logros={logros} />
           <CumpleanosCard cumples={cumples} />
         </aside>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Anton, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -20,7 +20,11 @@ export const metadata: Metadata = {
     locale: "es_ES",
     images: ["/brand/efa-logo.jpg"],
   },
+  appleWebApp: { capable: true, title: "EFA Voley", statusBarStyle: "black" },
+  icons: { apple: "/brand/efa-logo.jpg" },
 };
+
+export const viewport: Viewport = { themeColor: "#0e0e0f" };
 
 export default function RootLayout({
   children,

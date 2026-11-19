@@ -38,13 +38,21 @@ export async function getConvocatoriasDeJugador(playerId: string): Promise<Convo
   }
 }
 
-// Sincroniza la lista de convocados de una convocatoria (reemplaza todos).
-export async function syncConvocados(convocatoriaId: string, playerIds: string[]): Promise<void> {
+// Sincroniza la lista de convocados (reemplaza todos). Devuelve los IDs de los
+// jugadores NUEVOS (para notificarles).
+export async function syncConvocados(convocatoriaId: string, playerIds: string[]): Promise<string[]> {
   const sb = await createClient();
+  const { data: existing } = await sb
+    .from("convocatoria_jugadores")
+    .select("player_id")
+    .eq("convocatoria_id", convocatoriaId);
+  const prev = new Set((existing ?? []).map((r) => r.player_id as string));
+
   await sb.from("convocatoria_jugadores").delete().eq("convocatoria_id", convocatoriaId);
   if (playerIds.length > 0) {
     await sb
       .from("convocatoria_jugadores")
       .insert(playerIds.map((player_id) => ({ convocatoria_id: convocatoriaId, player_id })));
   }
+  return playerIds.filter((id) => !prev.has(id));
 }

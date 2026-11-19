@@ -9,6 +9,7 @@ import { serverEnv } from "@/lib/env";
 import { slugify } from "@/lib/slug";
 import { validateConvocatoria } from "@/lib/convocatoria-validation";
 import { syncConvocados } from "@/lib/convocados";
+import { sendPushToPlayer } from "@/lib/push";
 import { validatePhotoMeta } from "@/lib/gallery-validation";
 
 export type ConvocatoriaState = {
@@ -108,7 +109,22 @@ export async function saveConvocatoria(
     convId = data.id;
   }
 
-  if (convId) await syncConvocados(convId, convocados);
+  if (convId) {
+    const nuevos = await syncConvocados(convId, convocados);
+    const etiqueta = tipo === "torneo" ? "Torneo" : tipo === "amistoso" ? "Amistoso" : "Juego";
+    const fechaTxt = fechaIso
+      ? new Intl.DateTimeFormat("es", { dateStyle: "medium", timeStyle: "short" }).format(new Date(fechaIso))
+      : "";
+    await Promise.all(
+      nuevos.map((pid) =>
+        sendPushToPlayer(pid, {
+          title: "¡Estás convocado! 📣",
+          body: `${etiqueta}: ${v.titulo}${fechaTxt ? ` — ${fechaTxt}` : ""}`,
+          url: "/jugador",
+        })
+      )
+    );
+  }
 
   revalidar(slug);
   redirect("/admin/convocatorias");
