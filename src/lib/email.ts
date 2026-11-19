@@ -28,6 +28,36 @@ export async function sendClubNotification(subject: string, lines: string[]): Pr
   }
 }
 
+// Enlace de acceso (login de regreso) para un jugador que ya existe.
+export async function sendAccessLink(email: string, link: string): Promise<{ ok: boolean }> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return { ok: false };
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: FROM,
+        to: [email],
+        subject: "Tu enlace de acceso — EFA Voley Club 🏐",
+        text: [
+          "¡Hola!",
+          "",
+          "Aquí está tu enlace para entrar a tu portal del jugador (sin contraseña):",
+          link,
+          "",
+          "El enlace es de un solo uso y caduca pronto. Si no lo pediste, ignora este correo.",
+          "",
+          "— EFA Voley Club",
+        ].join("\n"),
+      }),
+    });
+    return { ok: res.ok };
+  } catch {
+    return { ok: false };
+  }
+}
+
 // Invitación al jugador aprobado con su enlace mágico para completar el perfil.
 // Nota: enviar a un correo distinto de la cuenta Resend requiere dominio verificado;
 // hasta entonces esto puede fallar (devuelve ok:false) y se usa el enlace del panel.
