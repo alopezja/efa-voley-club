@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { sendContact, type ContactState } from "@/app/(site)/contacto/actions";
 
 const initial: ContactState = { status: "idle" };
@@ -10,10 +10,19 @@ const inputClass =
 
 export function ContactForm() {
   const [state, action, pending] = useActionState(sendContact, initial);
+  const topRef = useRef<HTMLElement | null>(null);
+  const setTop = (el: HTMLElement | null) => {
+    topRef.current = el;
+  };
+  useEffect(() => {
+    if (state.status === "success" || state.status === "error") {
+      topRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [state]);
 
   if (state.status === "success") {
     return (
-      <div role="status" className="border-l-2 border-efa-red pl-6">
+      <div ref={setTop} role="status" className="scroll-mt-24 border-l-2 border-efa-red pl-6">
         <p className="font-display text-2xl uppercase text-efa-ink">
           ¡Gracias! Te responderemos pronto.
         </p>
@@ -24,7 +33,7 @@ export function ContactForm() {
   const err = state.errors ?? {};
 
   return (
-    <form action={action} noValidate className="space-y-6">
+    <form ref={setTop} action={action} noValidate className="scroll-mt-24 space-y-6">
       {state.message && (
         <p role="alert" className="border-l-2 border-efa-red pl-4 text-efa-ink">
           {state.message}
