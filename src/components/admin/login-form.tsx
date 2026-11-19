@@ -25,6 +25,16 @@ export function LoginForm() {
       setLoading(false);
       return;
     }
+    // Pide al navegador guardar las credenciales (Chrome/Edge).
+    try {
+      const w = window as unknown as { PasswordCredential?: new (d: unknown) => Credential };
+      if (w.PasswordCredential && navigator.credentials?.store) {
+        const cred = new w.PasswordCredential({ id: email, password, name: email });
+        await navigator.credentials.store(cred);
+      }
+    } catch {
+      /* no todos los navegadores lo soportan */
+    }
     router.push("/admin");
     router.refresh();
   }
@@ -40,9 +50,10 @@ export function LoginForm() {
         </label>
         <input
           id="email"
+          name="username"
           type="email"
           required
-          autoComplete="email"
+          autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={inputClass}
@@ -54,6 +65,7 @@ export function LoginForm() {
         </label>
         <input
           id="password"
+          name="password"
           type="password"
           required
           autoComplete="current-password"
