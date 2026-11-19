@@ -21,10 +21,16 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isAdminArea = path.startsWith("/admin");
   const isLogin = path === "/admin/login";
+  const isJugadorArea = path.startsWith("/jugador");
 
   if (isAdminArea && !isLogin && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
+    return NextResponse.redirect(url);
+  }
+  if (isJugadorArea && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/acceso";
     return NextResponse.redirect(url);
   }
   return response;

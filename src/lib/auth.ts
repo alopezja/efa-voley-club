@@ -82,6 +82,26 @@ export async function requireAdmin() {
   return { user, profile: perfil };
 }
 
+// Exige una sesión de jugador. Admins se mandan a su panel; anónimos a /acceso.
+export async function requireJugador() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/acceso");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, nombre, email, role, permisos")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const role = ((profile?.role as Rol) ?? "jugador") as Rol;
+  if (role === "admin" || role === "super_admin") redirect("/admin");
+
+  return { user };
+}
+
 // Exige el super administrador.
 export async function requireSuperAdmin() {
   const { user, profile } = await requireAdmin();
