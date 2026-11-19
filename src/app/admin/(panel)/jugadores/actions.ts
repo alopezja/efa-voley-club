@@ -51,7 +51,8 @@ export async function approvePlayer(_prev: ApproveState, formData: FormData): Pr
     { onConflict: "team_id,player_id", ignoreDuplicates: true }
   );
 
-  revalidatePath("/admin/jugadores");
+  // Nota: no revalidamos /admin/jugadores aquí para que la fila conserve el
+  // mensaje y el enlace mágico de respaldo tras aprobar (se actualiza al recargar).
   revalidatePath("/admin");
 
   // Enlace mágico + correo (si tiene email)
@@ -59,13 +60,17 @@ export async function approvePlayer(_prev: ApproveState, formData: FormData): Pr
   let emailEnviado = false;
   if (player.email) {
     try {
-      const redirectTo = `${await origen()}/auth/callback?next=/jugador/perfil`;
+      const base = await origen();
       const { data } = await admin.auth.admin.generateLink({
         type: "magiclink",
         email: player.email,
-        options: { redirectTo },
+        options: { redirectTo: `${base}/jugador/perfil` },
       });
-      magicLink = data?.properties?.action_link ?? undefined;
+      // Flujo SSR: construimos un enlace a /auth/confirm con el token_hash.
+      const hashed = data?.properties?.hashed_token;
+      magicLink = hashed
+        ? `${base}/auth/confirm?token_hash=${hashed}&type=magiclink&next=/jugador/perfil`
+        : undefined;
       if (magicLink) {
         const r = await sendPlayerInvite(player.email, player.nombre, magicLink);
         emailEnviado = r.ok;

@@ -1,5 +1,5 @@
 import { requireJugador } from "@/lib/auth";
-import { getMiPlayer } from "@/lib/player-profile";
+import { getMiPlayer, linkPlayerByEmail } from "@/lib/player-profile";
 import { getPlayerMemberships, getTeamOccupiedNumbers, TIPO_LABEL } from "@/lib/teams";
 import { getSchedules } from "@/lib/schedules";
 import { sugerirNumero } from "@/lib/teams-validation";
@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function JugadorPerfilPage() {
   const { user } = await requireJugador();
+  await linkPlayerByEmail(user.id, user.email);
   const player = await getMiPlayer(user.id);
 
   if (!player) {

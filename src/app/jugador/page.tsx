@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireJugador } from "@/lib/auth";
-import { getMiPlayer, getMiCompletitud } from "@/lib/player-profile";
+import { getMiPlayer, getMiCompletitud, linkPlayerByEmail } from "@/lib/player-profile";
 import { mensajeCompletitud } from "@/lib/profile-completeness";
 import { CompletenessRing } from "@/components/jugador/completeness-ring";
 
@@ -12,6 +12,7 @@ const INVITE_URL = `https://wa.me/?text=${encodeURIComponent(INVITE_MSG)}`;
 
 export default async function JugadorHomePage() {
   const { user } = await requireJugador();
+  await linkPlayerByEmail(user.id, user.email);
   const player = await getMiPlayer(user.id);
 
   if (!player) {
