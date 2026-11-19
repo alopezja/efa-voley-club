@@ -3,6 +3,7 @@ import { requireJugador } from "@/lib/auth";
 import { getMiPlayer, getMiCompletitud, linkPlayerByEmail } from "@/lib/player-profile";
 import { mensajeCompletitud } from "@/lib/profile-completeness";
 import { CompletenessRing } from "@/components/jugador/completeness-ring";
+import { ProfileReadyCard } from "@/components/jugador/profile-ready-card";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,8 @@ export default async function JugadorHomePage() {
     );
   }
 
-  const { completeness } = await getMiCompletitud(player);
+  const { completeness, memberships } = await getMiCompletitud(player);
+  const completo = completeness.pct >= 100;
 
   return (
     <div className="space-y-8">
@@ -38,7 +40,16 @@ export default async function JugadorHomePage() {
         <p className="mt-1 text-efa-ash">Este es tu espacio en el club.</p>
       </div>
 
-      <CompletenessRing completeness={completeness} mensaje={mensajeCompletitud(completeness)} />
+      {completo ? (
+        <ProfileReadyCard
+          nombre={`${player.nombre} ${player.apellido}`.trim()}
+          fotoUrl={player.foto_url}
+          posiciones={player.posiciones}
+          memberships={memberships}
+        />
+      ) : (
+        <CompletenessRing completeness={completeness} mensaje={mensajeCompletitud(completeness)} />
+      )}
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
