@@ -31,21 +31,27 @@ export function AdminNav({
   return (
     <nav
       aria-label="Panel de administración"
-      className="flex w-full flex-col gap-2 border-b border-efa-ash/30 bg-efa-ink p-4 md:min-h-screen md:w-64 md:border-b-0 md:border-r md:p-6"
+      className="flex w-full flex-col gap-2 border-b border-efa-ash/30 bg-efa-ink p-4 md:sticky md:top-0 md:h-screen md:w-64 md:border-b-0 md:border-r md:p-6"
     >
       <p className="mb-2 font-display text-xl uppercase text-efa-bone">Panel EFA</p>
-      {links.map((l) => (
-        <Link
-          key={l.href}
-          href={l.href}
-          className={`block rounded-md px-4 py-3 text-base font-semibold ${
-            isActive(l.href) ? "bg-efa-red text-efa-chalk" : "text-efa-bone hover:text-efa-red"
-          }`}
-        >
-          {l.label}
-        </Link>
-      ))}
-      <div className="mt-4 border-t border-efa-ash/30 pt-4 md:mt-auto">
+
+      {/* Links: hacen scroll interno si no caben, sin empujar el botón de salir */}
+      <div className="flex flex-col gap-2 md:min-h-0 md:flex-1 md:overflow-y-auto">
+        {links.map((l) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            className={`block rounded-md px-4 py-3 text-base font-semibold ${
+              isActive(l.href) ? "bg-efa-red text-efa-chalk" : "text-efa-bone hover:text-efa-red"
+            }`}
+          >
+            {l.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* Pie fijo: siempre visible en la base de la pantalla */}
+      <div className="mt-4 shrink-0 border-t border-efa-ash/30 pt-4">
         {email && <p className="truncate text-sm text-efa-ash">{email}</p>}
         <p className="mb-3 text-xs uppercase tracking-wide text-efa-ash/70">
           {esSuper ? "Super administrador" : "Administrador"}

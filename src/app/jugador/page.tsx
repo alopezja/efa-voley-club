@@ -59,8 +59,8 @@ export default async function JugadorHomePage() {
         <p className="mt-1 text-efa-ash">Este es tu espacio en el club.</p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
-        {/* Columna principal */}
+      <div className="grid gap-8 lg:grid-cols-[1fr_340px] lg:items-start">
+        {/* Columna central: perfil, logros y cumpleaños */}
         <div className="space-y-8">
           {completo ? (
             <ProfileReadyCard
@@ -90,10 +90,19 @@ export default async function JugadorHomePage() {
             </a>
           </div>
 
-          <section>
-            <h2 className="mb-4 text-2xl text-efa-bone">Próximos juegos</h2>
+          <LogrosStrip logros={logros} />
+          <CumpleanosCard cumples={cumples} />
+        </div>
+
+        {/* Columna derecha: próximos juegos con relieve + notificaciones */}
+        <aside className="space-y-6 lg:sticky lg:top-20">
+          <section className="rounded-2xl border border-efa-red/40 bg-gradient-to-b from-white/[0.07] to-white/[0.01] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_16px_36px_-14px_rgba(0,0,0,0.75)] ring-1 ring-black/30">
+            <div className="mb-4 flex items-center gap-2.5">
+              <span className="h-6 w-1.5 rounded-full bg-efa-red" />
+              <h2 className="text-xl font-semibold text-efa-bone">Próximos juegos</h2>
+            </div>
             {games.length === 0 ? (
-              <p className="text-efa-ash">No hay juegos programados por ahora.</p>
+              <p className="text-sm text-efa-ash">No hay juegos programados por ahora.</p>
             ) : (
               <div className="space-y-3">
                 {games.map((g) => (
@@ -102,13 +111,8 @@ export default async function JugadorHomePage() {
               </div>
             )}
           </section>
-        </div>
 
-        {/* Barra lateral derecha (fija en escritorio, arriba en móvil) */}
-        <aside className="order-first space-y-6 lg:order-none lg:sticky lg:top-20">
           <PushToggle />
-          <LogrosStrip logros={logros} />
-          <CumpleanosCard cumples={cumples} />
         </aside>
       </div>
     </div>
