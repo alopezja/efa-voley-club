@@ -63,10 +63,20 @@ export function ConvocatoriaEditor({ convocatoria }: { convocatoria?: Convocator
 
         {state.message && <p role="alert" className="text-sm font-medium text-efa-red">{state.message}</p>}
 
-        <div>
-          <label htmlFor="titulo" className={label}>Título del torneo / convocatoria</label>
-          <input id="titulo" name="titulo" defaultValue={convocatoria?.titulo ?? ""} className={input} />
-          {err.titulo && <p className="mt-1 text-sm text-efa-red">{err.titulo}</p>}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="titulo" className={label}>Título del evento</label>
+            <input id="titulo" name="titulo" defaultValue={convocatoria?.titulo ?? ""} className={input} />
+            {err.titulo && <p className="mt-1 text-sm text-efa-red">{err.titulo}</p>}
+          </div>
+          <div>
+            <label htmlFor="tipo" className={label}>Tipo</label>
+            <select id="tipo" name="tipo" defaultValue={convocatoria?.tipo ?? "juego"} className={input}>
+              <option value="juego">Juego</option>
+              <option value="torneo">Torneo</option>
+              <option value="amistoso">Amistoso</option>
+            </select>
+          </div>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">

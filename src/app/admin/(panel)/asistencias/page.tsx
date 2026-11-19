@@ -54,7 +54,7 @@ export default async function AdminAsistenciasPage() {
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
                   <div>
                     <span className="rounded bg-efa-red/15 px-2 py-0.5 text-xs font-semibold uppercase text-efa-red">
-                      {g.tipo === "entreno" ? "Entreno" : "Convocatoria"}
+                      {g.etiqueta}
                     </span>
                     <p className="mt-1 font-semibold text-efa-bone">{g.titulo}</p>
                     <p className="text-sm text-efa-ash">

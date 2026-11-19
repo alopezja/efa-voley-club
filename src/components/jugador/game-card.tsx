@@ -31,12 +31,14 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
   const [msg, setMsg] = useState<AsistenciaState | null>(null);
   const [sending, setSending] = useState(false);
   const estado = asistencia?.estado ?? null;
+  const [sel, setSel] = useState<"voy" | "no_voy" | null>(estado);
   const [expand, setExpand] = useState(estado === "no_voy");
   const [zona, setZona] = useState(asistencia?.molestia_zona ?? "");
   const [nivel, setNivel] = useState(asistencia?.molestia_nivel ?? "");
   const [nota, setNota] = useState(asistencia?.molestia_nota ?? "");
 
   async function enviar(nuevoEstado: "voy" | "no_voy") {
+    setSel(nuevoEstado); // feedback inmediato
     setSending(true);
     const fd = new FormData();
     fd.set("tipo", game.tipo);
@@ -60,7 +62,7 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div>
           <span className="rounded bg-efa-red/15 px-2 py-0.5 text-xs font-semibold uppercase text-efa-red">
-            {game.tipo === "entreno" ? "Entreno" : "Convocatoria"}
+            {game.etiqueta}
           </span>
           <p className="mt-1 text-lg font-semibold text-efa-bone">{game.titulo}</p>
           <p className="text-sm text-efa-ash">
@@ -92,7 +94,7 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
             setExpand(false);
             enviar("voy");
           }}
-          className={`${btnBase} ${estado === "voy" ? "bg-green-600 text-white" : "border border-efa-ash/50 text-efa-bone hover:border-green-500"}`}
+          className={`${btnBase} ${sel === "voy" ? "bg-green-600 text-white" : "border border-efa-ash/50 text-efa-bone hover:border-green-500"}`}
         >
           ✓ Voy
         </button>
@@ -100,7 +102,7 @@ export function GameCard({ game, asistencia }: { game: Game; asistencia: Asisten
           type="button"
           disabled={sending}
           onClick={() => setExpand(true)}
-          className={`${btnBase} ${estado === "no_voy" ? "bg-efa-red text-efa-chalk" : "border border-efa-ash/50 text-efa-bone hover:border-efa-red"}`}
+          className={`${btnBase} ${sel === "no_voy" || expand ? "bg-efa-red text-efa-chalk" : "border border-efa-ash/50 text-efa-bone hover:border-efa-red"}`}
         >
           ✗ No voy
         </button>

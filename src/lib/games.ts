@@ -8,6 +8,7 @@ export type GameTipo = "entreno" | "convocatoria";
 export type Game = {
   key: string; // `${tipo}:${refId}:${fecha}`
   tipo: GameTipo;
+  etiqueta: string; // Entreno / Juego / Torneo / Amistoso
   refId: string;
   fecha: string; // YYYY-MM-DD
   titulo: string;
@@ -34,6 +35,13 @@ function comoLlegar(mapsUrl: string | null, lugar: string | null): string | null
   return null;
 }
 
+// Coordenadas "lat,lng" del enlace de Maps, si las trae (para un pin exacto).
+function coordsDeMaps(mapsUrl: string | null): string | null {
+  if (!mapsUrl) return null;
+  const m = mapsUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ?? mapsUrl.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  return m ? `${m[1]},${m[2]}` : null;
+}
+
 export async function getUpcomingGames(limit = 4): Promise<Game[]> {
   const [schedules, convocatorias] = await Promise.all([
     getSchedules(),
@@ -51,17 +59,23 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
       if (inicio) {
         const ini = fechaColombia(fecha, inicio);
         const end = fin ? fechaColombia(fecha, fin) : new Date(ini.getTime() + 2 * 3600 * 1000);
+        const coords = coordsDeMaps(s.maps_url);
+        const detalle = [s.descripcion, s.maps_url ? `Cómo llegar: ${s.maps_url}` : null]
+          .filter(Boolean)
+          .join("\n");
         calendarUrl = googleCalendarUrl({
           titulo: `Entreno EFA Voley${s.lugar ? ` — ${s.lugar}` : ""}`,
           inicio: ini,
           fin: end,
-          lugar: s.lugar,
-          detalle: s.descripcion,
+          // Coordenadas = pin exacto; si no hay, el nombre del lugar.
+          lugar: coords ?? s.lugar,
+          detalle,
         });
       }
       games.push({
         key: `entreno:${s.id}:${fecha}`,
         tipo: "entreno",
+        etiqueta: "Entreno",
         refId: s.id,
         fecha,
         titulo: "Entrenamiento",
@@ -80,9 +94,12 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
     const dt = new Date(c.fecha_torneo);
     const fecha = dt.toISOString().slice(0, 10);
     const end = new Date(dt.getTime() + 2 * 3600 * 1000);
+    const etiquetaConv =
+      c.tipo === "torneo" ? "Torneo" : c.tipo === "amistoso" ? "Amistoso" : "Juego";
     games.push({
       key: `convocatoria:${c.id}:${fecha}`,
       tipo: "convocatoria",
+      etiqueta: etiquetaConv,
       refId: c.id,
       fecha,
       titulo: c.titulo,

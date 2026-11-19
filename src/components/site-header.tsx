@@ -54,6 +54,12 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Link
+            href="/acceso"
+            className="hidden rounded-sm border border-efa-bone/30 px-4 py-2 text-sm font-semibold text-efa-bone transition hover:border-efa-red hover:text-efa-red sm:inline-flex"
+          >
+            Ingresar
+          </Link>
+          <Link
             href="/registro"
             className="hidden rounded-sm bg-efa-red px-4 py-2 text-sm font-semibold text-white transition hover:bg-efa-red/90 sm:inline-flex"
           >
@@ -103,9 +109,16 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
+              href="/acceso"
+              onClick={() => setOpen(false)}
+              className="mt-3 inline-flex justify-center rounded-sm border border-efa-bone/30 px-4 py-3 text-sm font-semibold text-efa-bone"
+            >
+              Ingresar (jugadores)
+            </Link>
+            <Link
               href="/registro"
               onClick={() => setOpen(false)}
-              className="mt-3 inline-flex justify-center rounded-sm bg-efa-red px-4 py-3 text-sm font-semibold text-white"
+              className="mt-2 inline-flex justify-center rounded-sm bg-efa-red px-4 py-3 text-sm font-semibold text-white"
             >
               Súmate al club
             </Link>

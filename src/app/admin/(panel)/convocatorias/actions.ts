@@ -78,10 +78,14 @@ export async function saveConvocatoria(
     if (!Number.isNaN(d.getTime())) fechaIso = d.toISOString();
   }
 
+  const tipoRaw = String(formData.get("tipo") ?? "juego");
+  const tipo = ["juego", "torneo", "amistoso"].includes(tipoRaw) ? tipoRaw : "juego";
+
   const slug = await uniqueSlug(sb, v.titulo, id);
   const row = {
     titulo: v.titulo,
     slug,
+    tipo,
     fecha_torneo: fechaIso,
     lugar: v.lugar || null,
     categoria: v.categoria || null,

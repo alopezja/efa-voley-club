@@ -2,10 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 
 export type ConvocatoriaEstado = "borrador" | "publicado";
 
+export type ConvocatoriaTipo = "juego" | "torneo" | "amistoso";
+
 export type Convocatoria = {
   id: string;
   titulo: string;
   slug: string;
+  tipo: ConvocatoriaTipo;
   fecha_torneo: string | null;
   lugar: string | null;
   categoria: string | null;
@@ -17,7 +20,7 @@ export type Convocatoria = {
 };
 
 const COLS =
-  "id,titulo,slug,fecha_torneo,lugar,categoria,descripcion,imagen_portada_url,estado,created_at,updated_at";
+  "id,titulo,slug,tipo,fecha_torneo,lugar,categoria,descripcion,imagen_portada_url,estado,created_at,updated_at";
 
 export async function getPublishedConvocatorias(limit?: number): Promise<Convocatoria[]> {
   try {
