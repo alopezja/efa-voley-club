@@ -18,7 +18,7 @@ export function AdminNav({
   for (const s of SECCIONES) {
     if (esSuper || permisos.includes(s.key)) links.push({ href: s.href, label: s.label });
   }
-  if (esSuper) links.push({ href: "/admin/equipo", label: "Equipo" });
+  if (esSuper) links.push({ href: "/admin/equipo", label: "Administradores" });
 
   return (
     <nav

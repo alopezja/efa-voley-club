@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { requirePerm } from "@/lib/auth";
-import { getPlayers, type Player } from "@/lib/players";
-import { approvePlayer, rejectPlayer } from "./actions";
+import { getPlayersAdmin, type PlayerAdmin } from "@/lib/players";
+import { getTeams } from "@/lib/teams";
+import { ApprovePlayerRow } from "@/components/admin/approve-player-row";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Jugadores", robots: { index: false, follow: false } };
@@ -12,7 +13,7 @@ const estadoStyle: Record<string, string> = {
   rechazado: "bg-efa-red/20 text-efa-red",
 };
 
-function Fila({ p }: { p: Player }) {
+function FilaRevisado({ p }: { p: PlayerAdmin }) {
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-efa-ash/30 bg-efa-ink p-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -24,25 +25,20 @@ function Fila({ p }: { p: Player }) {
         </p>
       </div>
       <div className="flex items-center gap-3">
+        {p.estado === "aprobado" && (
+          <span className="flex items-center gap-2" title="Perfil completo">
+            <span className="h-2 w-24 overflow-hidden rounded-full bg-efa-ash/20">
+              <span
+                className={`block h-full ${p.pct >= 100 ? "bg-green-400" : "bg-efa-red"}`}
+                style={{ width: `${p.pct}%` }}
+              />
+            </span>
+            <span className="text-xs font-semibold text-efa-ash">{p.pct}%</span>
+          </span>
+        )}
         <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${estadoStyle[p.estado] ?? ""}`}>
           {p.estado}
         </span>
-        {p.estado !== "aprobado" && (
-          <form action={approvePlayer}>
-            <input type="hidden" name="id" value={p.id} />
-            <button className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white hover:opacity-90">
-              Aprobar
-            </button>
-          </form>
-        )}
-        {p.estado !== "rechazado" && (
-          <form action={rejectPlayer}>
-            <input type="hidden" name="id" value={p.id} />
-            <button className="rounded-md border border-efa-ash/50 px-3 py-2 text-sm font-semibold text-efa-bone hover:border-efa-red hover:text-efa-red">
-              Rechazar
-            </button>
-          </form>
-        )}
       </div>
     </div>
   );
@@ -50,7 +46,7 @@ function Fila({ p }: { p: Player }) {
 
 export default async function AdminJugadoresPage() {
   await requirePerm("jugadores");
-  const players = await getPlayers();
+  const [players, teams] = await Promise.all([getPlayersAdmin(), getTeams()]);
   const pendientes = players.filter((p) => p.estado === "pendiente");
   const resto = players.filter((p) => p.estado !== "pendiente");
 
@@ -63,14 +59,22 @@ export default async function AdminJugadoresPage() {
         {pendientes.length === 0 ? (
           <p className="text-efa-ash">No hay registros pendientes.</p>
         ) : (
-          <div className="space-y-3">{pendientes.map((p) => <Fila key={p.id} p={p} />)}</div>
+          <div className="space-y-3">
+            {pendientes.map((p) => (
+              <ApprovePlayerRow key={p.id} player={p} teams={teams} />
+            ))}
+          </div>
         )}
       </section>
 
       {resto.length > 0 && (
         <section>
           <h2 className="mb-4 text-2xl text-efa-bone">Revisados ({resto.length})</h2>
-          <div className="space-y-3">{resto.map((p) => <Fila key={p.id} p={p} />)}</div>
+          <div className="space-y-3">
+            {resto.map((p) => (
+              <FilaRevisado key={p.id} p={p} />
+            ))}
+          </div>
         </section>
       )}
     </div>

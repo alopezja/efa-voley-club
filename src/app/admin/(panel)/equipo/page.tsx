@@ -50,10 +50,10 @@ export default async function AdminEquipoPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="mb-2 text-4xl">Equipo</h1>
+      <h1 className="mb-2 text-4xl">Administradores</h1>
       <p className="mb-8 text-efa-ash">
-        Administra quién puede entrar al panel y qué secciones puede gestionar. Esta pantalla es
-        exclusiva del super administrador.
+        Gestiona quién puede entrar al panel y qué secciones puede administrar. Esta pantalla es
+        exclusiva del super administrador. (No confundir con “Equipos”, que son los equipos de vóley.)
       </p>
       <EquipoManager filas={filas} />
     </div>
