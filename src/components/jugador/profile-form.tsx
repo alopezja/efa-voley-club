@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { useFormStatus } from "react-dom";
 import { compressImage } from "@/lib/compress-image";
 import { CourtPositions } from "@/components/jugador/court-positions";
@@ -93,14 +92,8 @@ export function ProfileForm({
         <div className="flex items-center gap-4">
           <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border border-efa-ash/40 bg-efa-ink">
             {preview && (
-              <Image
-                src={preview}
-                alt="Vista previa"
-                width={80}
-                height={80}
-                unoptimized
-                className="h-20 w-20 object-cover"
-              />
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={preview} alt="Vista previa" className="h-20 w-20 object-cover" />
             )}
           </div>
           <input
