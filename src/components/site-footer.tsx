@@ -52,9 +52,16 @@ export function SiteFooter() {
         </div>
       </Container>
 
-      <Container className="flex flex-col gap-1 border-t border-efa-chalk/5 py-6 text-xs text-efa-ash sm:flex-row sm:justify-between">
+      <Container className="flex flex-col gap-2 border-t border-efa-chalk/5 py-6 text-xs text-efa-ash sm:flex-row sm:items-center sm:justify-between">
         <span>© {new Date().getFullYear()} EFA Voley Club. Todos los derechos reservados.</span>
-        <span>Eso Fue Adentro · EFA</span>
+        <span className="flex gap-4">
+          <Link href="/privacidad" className="transition-colors hover:text-efa-red">
+            Privacidad
+          </Link>
+          <Link href="/terminos" className="transition-colors hover:text-efa-red">
+            Condiciones
+          </Link>
+        </span>
       </Container>
     </footer>
   );
