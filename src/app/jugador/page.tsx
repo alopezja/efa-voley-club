@@ -4,11 +4,13 @@ import { getMiPlayer, getMiCompletitud, linkPlayerByEmail } from "@/lib/player-p
 import { mensajeCompletitud } from "@/lib/profile-completeness";
 import { CompletenessRing } from "@/components/jugador/completeness-ring";
 import { ProfileReadyCard } from "@/components/jugador/profile-ready-card";
+import { getUpcomingGames, getMisAsistencias } from "@/lib/games";
+import { GameCard } from "@/components/jugador/game-card";
 
 export const dynamic = "force-dynamic";
 
 const INVITE_MSG =
-  "¡Juega vóley con nosotros en EFA Voley Club! 🏐 Regístrate aquí: https://efavoleyclub.com/registro";
+  "¡Juega vóley con nosotros en EFA Voley Club! Regístrate aquí: https://efavoleyclub.com/registro";
 const INVITE_URL = `https://wa.me/?text=${encodeURIComponent(INVITE_MSG)}`;
 
 export default async function JugadorHomePage() {
@@ -30,6 +32,7 @@ export default async function JugadorHomePage() {
 
   const { completeness, memberships } = await getMiCompletitud(player);
   const completo = completeness.pct >= 100;
+  const [games, asistencias] = await Promise.all([getUpcomingGames(4), getMisAsistencias(player.id)]);
 
   return (
     <div className="space-y-8">
@@ -67,6 +70,19 @@ export default async function JugadorHomePage() {
           Invitar a un amigo por WhatsApp
         </a>
       </div>
+
+      <section>
+        <h2 className="mb-4 text-2xl text-efa-bone">Próximos juegos</h2>
+        {games.length === 0 ? (
+          <p className="text-efa-ash">No hay juegos programados por ahora.</p>
+        ) : (
+          <div className="space-y-3">
+            {games.map((g) => (
+              <GameCard key={g.key} game={g} asistencia={asistencias[g.key] ?? null} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
