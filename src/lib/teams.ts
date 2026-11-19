@@ -42,6 +42,52 @@ export async function getTeamOccupiedNumbers(teamId: string): Promise<number[]> 
   }
 }
 
+export type RosterMiembro = {
+  nombre: string;
+  apellido: string;
+  numero: number | null;
+  posiciones: string[];
+  foto_url: string | null;
+};
+export type TeamConRoster = {
+  id: string;
+  nombre: string;
+  tipo: TeamTipo;
+  miembros: RosterMiembro[];
+};
+
+// Todos los equipos con sus jugadores (para el panel admin).
+export async function getTeamsConRoster(): Promise<TeamConRoster[]> {
+  try {
+    const sb = await createClient();
+    const { data } = await sb
+      .from("teams")
+      .select("id, nombre, tipo, team_members(numero, players(nombre, apellido, posiciones, foto_url))")
+      .order("tipo", { ascending: true })
+      .order("nombre", { ascending: true });
+
+    return (data ?? []).map((t) => {
+      const tm = (t.team_members ?? []) as unknown as {
+        numero: number | null;
+        players: { nombre: string; apellido: string; posiciones: string[]; foto_url: string | null } | null;
+      }[];
+      const miembros: RosterMiembro[] = tm
+        .filter((m) => m.players)
+        .map((m) => ({
+          nombre: m.players!.nombre,
+          apellido: m.players!.apellido,
+          numero: m.numero,
+          posiciones: m.players!.posiciones ?? [],
+          foto_url: m.players!.foto_url,
+        }))
+        .sort((a, b) => (a.numero ?? 999) - (b.numero ?? 999));
+      return { id: t.id, nombre: t.nombre, tipo: t.tipo as TeamTipo, miembros };
+    });
+  } catch {
+    return [];
+  }
+}
+
 // Membresías de un jugador (con datos del equipo).
 export async function getPlayerMemberships(playerId: string): Promise<Membership[]> {
   try {

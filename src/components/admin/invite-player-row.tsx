@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { TIPO_LABEL, type Team, type TeamTipo } from "@/lib/teams-types";
@@ -45,6 +46,12 @@ export function InvitePlayerRow({ player, teams }: { player: PlayerRow; teams: T
           <p className="text-sm text-efa-ash">
             {[player.email, player.telefono].filter(Boolean).join(" · ") || "Sin contacto"}
           </p>
+          <Link
+            href={`/admin/jugadores/${player.id}`}
+            className="text-xs font-semibold text-efa-red hover:underline"
+          >
+            Ver ficha →
+          </Link>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {player.equipos.map((e, i) => (
               <span key={i} className="rounded bg-efa-ash/15 px-2 py-0.5 text-xs text-efa-bone">

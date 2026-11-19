@@ -13,6 +13,7 @@ export const SECCIONES = [
   { key: "horarios", label: "Horarios", href: "/admin/horarios" },
   { key: "equipos", label: "Equipos", href: "/admin/equipos" },
   { key: "asistencias", label: "Asistencias", href: "/admin/asistencias" },
+  { key: "camisetas", label: "Camisetas", href: "/admin/camisetas" },
 ] as const;
 
 export type SeccionKey = (typeof SECCIONES)[number]["key"];

@@ -43,6 +43,43 @@ export async function getAprobadosBasico(): Promise<{ id: string; nombre: string
   }
 }
 
+export type PlayerDetalle = {
+  id: string;
+  nombre: string;
+  apellido: string;
+  email: string | null;
+  telefono: string | null;
+  estado: string;
+  foto_url: string | null;
+  posiciones: string[];
+  experiencia: number | null;
+  fecha_nacimiento: string | null;
+  eps: string | null;
+  contacto_emergencia: string | null;
+  mano_dominante: string | null;
+  disponibilidad: string[];
+  quiere_camiseta: boolean | null;
+  camiseta_color: string | null;
+  camiseta_talla: string | null;
+  apodo: string | null;
+};
+
+export async function getPlayerDetalle(id: string): Promise<PlayerDetalle | null> {
+  try {
+    const sb = await createClient();
+    const { data } = await sb
+      .from("players")
+      .select(
+        "id,nombre,apellido,email,telefono,estado,foto_url,posiciones,experiencia,fecha_nacimiento,eps,contacto_emergencia,mano_dominante,disponibilidad,quiere_camiseta,camiseta_color,camiseta_talla,apodo"
+      )
+      .eq("id", id)
+      .maybeSingle();
+    return (data as PlayerDetalle) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export type AprobadoPick = {
   id: string;
   nombre: string;
