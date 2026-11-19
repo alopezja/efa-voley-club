@@ -34,6 +34,13 @@ function Campos({ s }: { s?: Schedule }) {
         </select>
       </label>
       <label className="text-sm text-efa-ash">
+        Tipo
+        <select name="tipo" defaultValue={s?.tipo ?? "entrenamiento"} className={`mt-1 ${input}`}>
+          <option value="entrenamiento">Entrenamiento</option>
+          <option value="juego">Juego</option>
+        </select>
+      </label>
+      <label className="text-sm text-efa-ash">
         Horario
         <input name="horario" defaultValue={s?.horario ?? ""} placeholder="8:00 – 11:00 pm" className={`mt-1 ${input}`} />
       </label>

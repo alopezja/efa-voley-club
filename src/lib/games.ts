@@ -54,6 +54,8 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
   for (const s of schedules) {
     const fechas = proximasFechas(s.dia, hoy, 2);
     const { inicio, fin } = parseHorario(s.horario);
+    const esJuego = s.tipo === "juego";
+    const nombre = esJuego ? "Juego" : "Entrenamiento";
     for (const fecha of fechas) {
       let calendarUrl: string | null = null;
       if (inicio) {
@@ -64,7 +66,7 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
           .filter(Boolean)
           .join("\n");
         calendarUrl = googleCalendarUrl({
-          titulo: `Entreno EFA Voley${s.lugar ? ` — ${s.lugar}` : ""}`,
+          titulo: `${nombre} EFA Voley${s.lugar ? ` — ${s.lugar}` : ""}`,
           inicio: ini,
           fin: end,
           // Coordenadas = pin exacto; si no hay, el nombre del lugar.
@@ -75,10 +77,10 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
       games.push({
         key: `entreno:${s.id}:${fecha}`,
         tipo: "entreno",
-        etiqueta: "Entreno",
+        etiqueta: esJuego ? "Juego" : "Entreno",
         refId: s.id,
         fecha,
-        titulo: "Entrenamiento",
+        titulo: nombre,
         lugar: s.lugar,
         horaTexto: s.horario,
         comoLlegarUrl: comoLlegar(s.maps_url, s.lugar),

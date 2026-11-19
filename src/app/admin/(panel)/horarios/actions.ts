@@ -7,8 +7,10 @@ import { createClient } from "@/lib/supabase/server";
 export type HorarioState = { status: "idle" | "success" | "error"; message?: string };
 
 function fields(formData: FormData) {
+  const tipoRaw = String(formData.get("tipo") ?? "entrenamiento");
   return {
     dia: String(formData.get("dia") ?? "").trim(),
+    tipo: ["entrenamiento", "juego"].includes(tipoRaw) ? tipoRaw : "entrenamiento",
     horario: String(formData.get("horario") ?? "").trim() || null,
     lugar: String(formData.get("lugar") ?? "").trim() || null,
     descripcion: String(formData.get("descripcion") ?? "").trim() || null,

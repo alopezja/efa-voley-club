@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 export type Schedule = {
   id: string;
   dia: string;
+  tipo: "entrenamiento" | "juego";
   horario: string | null;
   lugar: string | null;
   descripcion: string | null;
@@ -27,7 +28,7 @@ export async function getSchedules(): Promise<Schedule[]> {
     const sb = await createClient();
     const { data } = await sb
       .from("schedules")
-      .select("id,dia,horario,lugar,descripcion,maps_url,orden,created_at")
+      .select("id,dia,tipo,horario,lugar,descripcion,maps_url,orden,created_at")
       .order("orden", { ascending: true })
       .order("created_at", { ascending: true });
     return (data as Schedule[]) ?? [];
