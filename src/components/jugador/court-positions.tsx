@@ -4,13 +4,13 @@ import { useState } from "react";
 
 type Spot = { key: string; label: string; x: number; y: number };
 
-// Posiciones ubicadas en zonas representativas de media cancha (red arriba).
+// Acomodo balanceado en media cancha (red arriba): 3 adelante, 2 atrás centradas.
 const SPOTS: Spot[] = [
-  { key: "punta", label: "Punta", x: 80, y: 78 },
-  { key: "central", label: "Central", x: 150, y: 78 },
-  { key: "opuesto", label: "Opuesto", x: 220, y: 78 },
-  { key: "libero", label: "Líbero", x: 150, y: 190 },
-  { key: "armador", label: "Armador", x: 220, y: 190 },
+  { key: "punta", label: "Punta", x: 80, y: 96 },
+  { key: "central", label: "Central", x: 160, y: 96 },
+  { key: "opuesto", label: "Opuesto", x: 240, y: 96 },
+  { key: "libero", label: "Líbero", x: 120, y: 216 },
+  { key: "armador", label: "Armador", x: 200, y: 216 },
 ];
 
 export function CourtPositions({ defaultValue }: { defaultValue: string[] }) {
@@ -21,73 +21,118 @@ export function CourtPositions({ defaultValue }: { defaultValue: string[] }) {
       if (key === "no_se") return prev.includes("no_se") ? [] : ["no_se"];
       const base = prev.filter((k) => k !== "no_se");
       if (base.includes(key)) return base.filter((k) => k !== key);
-      if (base.length >= 2) return base; // máx 2
+      if (base.length >= 2) return base;
       return [...base, key];
     });
   }
 
   const noSe = sel.includes("no_se");
+  const elegidas = sel.filter((k) => k !== "no_se");
+  const nombres = SPOTS.filter((s) => elegidas.includes(s.key)).map((s) => s.label);
 
   return (
     <div>
-      <p className="mb-2 text-sm font-semibold text-efa-bone">
-        Posición <span className="font-normal text-efa-ash">— toca hasta 2 sobre la cancha</span>
-      </p>
+      <div className="mb-2 flex items-baseline justify-between">
+        <p className="text-sm font-semibold text-efa-bone">Posición</p>
+        <p className="text-xs text-efa-ash">
+          {noSe ? "Sin definir" : `${elegidas.length}/2 · toca la cancha`}
+        </p>
+      </div>
 
-      <div className="rounded-xl border border-efa-ash/30 bg-efa-ink p-3">
-        <svg viewBox="0 0 300 260" className="w-full" role="group" aria-label="Cancha de vóley">
-          {/* Cancha */}
-          <rect x="30" y="20" width="240" height="220" rx="6" fill="#14532d22" stroke="currentColor" className="text-efa-ash/50" strokeWidth="2" />
-          {/* Red (arriba) */}
-          <line x1="30" y1="20" x2="270" y2="20" stroke="currentColor" className="text-efa-bone" strokeWidth="4" strokeDasharray="6 4" />
-          {/* Línea de ataque (3m) */}
-          <line x1="30" y1="120" x2="270" y2="120" stroke="currentColor" className="text-efa-ash/40" strokeWidth="2" strokeDasharray="4 4" />
+      <div className="overflow-hidden rounded-2xl border border-efa-ash/30 bg-gradient-to-b from-[#17130f] to-efa-ink p-4">
+        <svg viewBox="0 0 320 300" className="h-auto w-full" role="group" aria-label="Cancha de vóley">
+          <defs>
+            <linearGradient id="court" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#201a14" />
+              <stop offset="1" stopColor="#141210" />
+            </linearGradient>
+            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#d81f26" floodOpacity="0.55" />
+            </filter>
+          </defs>
+
+          {/* Superficie de la cancha */}
+          <rect x="20" y="20" width="280" height="260" rx="10" fill="url(#court)" stroke="#f2ece1" strokeOpacity="0.5" strokeWidth="2" />
+
+          {/* Red (arriba) con postes */}
+          <line x1="20" y1="20" x2="300" y2="20" stroke="#f2ece1" strokeWidth="5" strokeDasharray="7 5" strokeOpacity="0.9" />
+          <circle cx="20" cy="20" r="4" fill="#f2ece1" />
+          <circle cx="300" cy="20" r="4" fill="#f2ece1" />
+
+          {/* Líneas de zonas (3 columnas) */}
+          <line x1="113" y1="20" x2="113" y2="280" stroke="#f2ece1" strokeOpacity="0.14" strokeWidth="1.5" />
+          <line x1="207" y1="20" x2="207" y2="280" stroke="#f2ece1" strokeOpacity="0.14" strokeWidth="1.5" />
+          {/* Línea de ataque (3 metros) */}
+          <line x1="20" y1="150" x2="300" y2="150" stroke="#f2ece1" strokeOpacity="0.35" strokeWidth="2" strokeDasharray="6 5" />
 
           {SPOTS.map((s) => {
-            const active = sel.includes(s.key);
+            const active = elegidas.includes(s.key);
             return (
               <g
                 key={s.key}
                 onClick={() => toggle(s.key)}
                 style={{ cursor: noSe ? "not-allowed" : "pointer" }}
-                opacity={noSe ? 0.4 : 1}
+                opacity={noSe ? 0.35 : 1}
+                className="group"
               >
+                {/* área táctil */}
+                <circle cx={s.x} cy={s.y} r="36" fill="transparent" />
                 <circle
                   cx={s.x}
                   cy={s.y}
-                  r="28"
+                  r="33"
                   fill={active ? "#d81f26" : "#0e0e0f"}
-                  stroke={active ? "#d81f26" : "currentColor"}
-                  className={active ? "" : "text-efa-ash/60"}
-                  strokeWidth="2"
+                  stroke="currentColor"
+                  strokeWidth={active ? 2.5 : 2}
+                  filter={active ? "url(#glow)" : undefined}
+                  className={
+                    active
+                      ? "text-efa-red"
+                      : "text-efa-ash/60 transition-colors group-hover:text-efa-red"
+                  }
                 />
                 <text
                   x={s.x}
-                  y={s.y + 4}
+                  y={active ? s.y - 1 : s.y + 4}
                   textAnchor="middle"
-                  fontSize="11"
-                  fontWeight="600"
-                  fill={active ? "#f2ece1" : "#c9c3b8"}
+                  fontSize="12.5"
+                  fontWeight="700"
+                  fill={active ? "#f2ece1" : "#d6d0c4"}
                 >
                   {s.label}
                 </text>
+                {active && (
+                  <text x={s.x} y={s.y + 15} textAnchor="middle" fontSize="11" fill="#f2ece1" fillOpacity="0.9">
+                    ✓
+                  </text>
+                )}
               </g>
             );
           })}
         </svg>
       </div>
 
-      <button
-        type="button"
-        onClick={() => toggle("no_se")}
-        className={`mt-3 w-full rounded-md border px-4 py-2 text-sm font-semibold transition ${
-          noSe
-            ? "border-efa-red bg-efa-red/15 text-efa-red"
-            : "border-efa-ash/40 text-efa-bone hover:border-efa-red"
-        }`}
-      >
-        Aún no sé mi posición
-      </button>
+      {/* Resumen + "no sé" */}
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-efa-ash">
+          {noSe
+            ? "Marcaste: aún no sé mi posición."
+            : nombres.length
+              ? `Elegiste: ${nombres.join(" y ")}.`
+              : "Elige 1 o 2 posiciones."}
+        </p>
+        <button
+          type="button"
+          onClick={() => toggle("no_se")}
+          className={`rounded-md border px-4 py-2 text-sm font-semibold transition ${
+            noSe
+              ? "border-efa-red bg-efa-red/15 text-efa-red"
+              : "border-efa-ash/40 text-efa-bone hover:border-efa-red"
+          }`}
+        >
+          Aún no sé
+        </button>
+      </div>
 
       {sel.map((k) => (
         <input key={k} type="hidden" name="posiciones" value={k} />
