@@ -41,7 +41,7 @@ export default async function JugadorLayout({ children }: { children: React.Reac
           </form>
         </nav>
       </header>
-      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-8">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-8">{children}</main>
     </div>
   );
 }

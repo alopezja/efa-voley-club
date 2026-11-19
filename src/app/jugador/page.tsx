@@ -58,50 +58,57 @@ export default async function JugadorHomePage() {
         <p className="mt-1 text-efa-ash">Este es tu espacio en el club.</p>
       </div>
 
-      {completo ? (
-        <ProfileReadyCard
-          nombre={`${player.nombre} ${player.apellido}`.trim()}
-          fotoUrl={player.foto_url}
-          posiciones={player.posiciones}
-          memberships={memberships}
-        />
-      ) : (
-        <CompletenessRing completeness={completeness} mensaje={mensajeCompletitud(completeness)} />
-      )}
+      <div className="grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
+        {/* Columna principal */}
+        <div className="space-y-8">
+          {completo ? (
+            <ProfileReadyCard
+              nombre={`${player.nombre} ${player.apellido}`.trim()}
+              fotoUrl={player.foto_url}
+              posiciones={player.posiciones}
+              memberships={memberships}
+            />
+          ) : (
+            <CompletenessRing completeness={completeness} mensaje={mensajeCompletitud(completeness)} />
+          )}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/jugador/perfil"
-          className="rounded-md bg-efa-red px-5 py-3 text-center text-base font-semibold text-efa-chalk transition hover:opacity-90"
-        >
-          {completeness.pct >= 100 ? "Editar mi perfil" : "Completar mi perfil"}
-        </Link>
-        <a
-          href={INVITE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-md border border-efa-ash/50 px-5 py-3 text-center text-base font-semibold text-efa-bone transition hover:border-efa-red hover:text-efa-red"
-        >
-          Invitar a un amigo por WhatsApp
-        </a>
-      </div>
-
-      <section>
-        <h2 className="mb-4 text-2xl text-efa-bone">Próximos juegos</h2>
-        {games.length === 0 ? (
-          <p className="text-efa-ash">No hay juegos programados por ahora.</p>
-        ) : (
-          <div className="space-y-3">
-            {games.map((g) => (
-              <GameCard key={g.key} game={g} asistencia={asistencias[g.key] ?? null} />
-            ))}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/jugador/perfil"
+              className="rounded-md bg-efa-red px-5 py-3 text-center text-base font-semibold text-efa-chalk transition hover:opacity-90"
+            >
+              {completeness.pct >= 100 ? "Editar mi perfil" : "Completar mi perfil"}
+            </Link>
+            <a
+              href={INVITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md border border-efa-ash/50 px-5 py-3 text-center text-base font-semibold text-efa-bone transition hover:border-efa-red hover:text-efa-red"
+            >
+              Invitar a un amigo por WhatsApp
+            </a>
           </div>
-        )}
-      </section>
 
-      <LogrosStrip logros={logros} />
+          <section>
+            <h2 className="mb-4 text-2xl text-efa-bone">Próximos juegos</h2>
+            {games.length === 0 ? (
+              <p className="text-efa-ash">No hay juegos programados por ahora.</p>
+            ) : (
+              <div className="space-y-3">
+                {games.map((g) => (
+                  <GameCard key={g.key} game={g} asistencia={asistencias[g.key] ?? null} />
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
 
-      <CumpleanosCard cumples={cumples} />
+        {/* Barra lateral derecha (fija en escritorio, arriba en móvil) */}
+        <aside className="order-first space-y-6 lg:order-none lg:sticky lg:top-20">
+          <LogrosStrip logros={logros} />
+          <CumpleanosCard cumples={cumples} />
+        </aside>
+      </div>
     </div>
   );
 }

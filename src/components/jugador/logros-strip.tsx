@@ -1,33 +1,35 @@
 import type { Logro } from "@/lib/logros";
 
+// Tarjeta compacta (vertical) pensada para la barra lateral del portal.
 export function LogrosStrip({ logros }: { logros: Logro[] }) {
   const conseguidos = logros.filter((l) => l.conseguido).length;
 
   return (
-    <section>
+    <section className="rounded-2xl border border-efa-ash/30 bg-efa-ink p-5">
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-2xl text-efa-bone">Mis logros</h2>
-        <span className="text-sm text-efa-ash">
+        <h2 className="text-xl text-efa-bone">Mis logros</h2>
+        <span className="text-sm font-semibold text-efa-red">
           {conseguidos}/{logros.length}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+      <ul className="space-y-2">
         {logros.map((l) => (
-          <div
+          <li
             key={l.key}
-            title={l.descripcion}
-            className={`rounded-xl border p-3 text-center transition ${
-              l.conseguido
-                ? "border-efa-red/40 bg-efa-red/10"
-                : "border-efa-ash/20 bg-efa-ink opacity-50"
+            className={`flex items-center gap-3 rounded-lg border p-2.5 ${
+              l.conseguido ? "border-efa-red/40 bg-efa-red/10" : "border-efa-ash/15 opacity-60"
             }`}
           >
-            <div className={`text-3xl ${l.conseguido ? "" : "grayscale"}`}>{l.conseguido ? l.icono : "🔒"}</div>
-            <p className="mt-1 text-xs font-semibold text-efa-bone">{l.titulo}</p>
-            <p className="mt-0.5 text-[11px] leading-tight text-efa-ash">{l.descripcion}</p>
-          </div>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-efa-ink text-lg">
+              {l.conseguido ? l.icono : "🔒"}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-efa-bone">{l.titulo}</p>
+              <p className="truncate text-xs text-efa-ash">{l.descripcion}</p>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
