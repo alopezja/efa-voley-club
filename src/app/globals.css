@@ -24,6 +24,30 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Campo oscuro con textura: malla de red (tiza) + resplandor rojo tenue.
+   El cuerpo es el "campo"; los contenedores oscuros van transparentes para
+   que esta textura se vea pareja y continua detrás del contenido. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--color-efa-ink);
+  background-image:
+    radial-gradient(1100px 560px at 84% -10%, rgba(216, 31, 38, 0.08), transparent 60%),
+    radial-gradient(900px 520px at 6% 108%, rgba(216, 31, 38, 0.05), transparent 62%),
+    repeating-linear-gradient(45deg, rgba(242, 236, 225, 0.03) 0, rgba(242, 236, 225, 0.03) 1px, transparent 1px, transparent 26px),
+    repeating-linear-gradient(-45deg, rgba(242, 236, 225, 0.03) 0, rgba(242, 236, 225, 0.03) 1px, transparent 1px, transparent 26px);
+}
+
+/* Malla de tiza para superponer sobre superficies de color (p. ej. la banda roja). */
+.efa-net {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 24px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 24px);
+}
+
 h1, h2, h3 {
   font-family: var(--font-display);
   text-transform: uppercase;

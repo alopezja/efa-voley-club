@@ -22,7 +22,7 @@ export default async function JugadorLayout({ children }: { children: React.Reac
 
   return (
     <NotifProvider initial={buzon}>
-      <div className="min-h-screen bg-efa-ink text-efa-bone">
+      <div className="min-h-screen text-efa-bone">
         <header className="flex items-center justify-between border-b border-efa-ash/30 px-4 py-3 sm:px-8">
           <Link href="/jugador" className="flex items-center gap-3">
             <Image src="/brand/efa-logo.jpg" alt="EFA Voley Club" width={40} height={40} className="rounded-full" />

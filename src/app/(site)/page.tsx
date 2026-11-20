@@ -55,7 +55,7 @@ export default async function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-efa-ink">
+      <section className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-56">
           <div className="absolute bottom-14 left-0 right-0 h-px bg-efa-chalk/30" />
           <svg
@@ -333,7 +333,7 @@ export default async function Home() {
       )}
 
       {/* CTA FINAL: SÚMATE + RÉTANOS */}
-      <section className="bg-efa-red">
+      <section className="bg-efa-red efa-net">
         <Container className="py-16">
           <div className="grid gap-10 sm:grid-cols-2">
             <div>

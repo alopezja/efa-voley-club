@@ -8,7 +8,8 @@ export function Section({
   children: React.ReactNode;
 }) {
   const tones = {
-    dark: "bg-efa-ink text-efa-bone",
+    // Oscuro: transparente para mostrar el campo texturizado del body.
+    dark: "text-efa-bone",
     light: "bg-efa-bone text-efa-ink",
   };
   return (
