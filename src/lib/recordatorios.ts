@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getGamesHoy } from "@/lib/games";
 import { getConvocadosIds } from "@/lib/convocados";
-import { sendPushToPlayer } from "@/lib/push";
+import { notifyPlayer } from "@/lib/notifications";
 
 // Envía un push a los jugadores por cada juego de HOY.
 // Entrenos/juegos recurrentes → todos los jugadores suscritos.
@@ -16,13 +16,13 @@ export async function enviarRecordatoriosHoy(): Promise<{ juegos: number; envios
 
   let envios = 0;
   for (const g of games) {
-    const body = `Hoy: ${g.titulo}${g.horaTexto ? ` a las ${g.horaTexto}` : ""}${g.lugar ? ` en ${g.lugar}` : ""}`;
-    const payload = { title: `🏐 ${g.etiqueta} hoy`, body, url: "/jugador" };
+    const cuerpo = `Hoy: ${g.titulo}${g.horaTexto ? ` a las ${g.horaTexto}` : ""}${g.lugar ? ` en ${g.lugar}` : ""}`;
+    const aviso = { tipo: "recordatorio" as const, titulo: `${g.etiqueta} hoy`, cuerpo, url: "/jugador" };
 
     const recipients =
       g.tipo === "convocatoria" ? await getConvocadosIds(g.refId) : suscritos;
 
-    await Promise.all(recipients.map((pid) => sendPushToPlayer(pid, payload)));
+    await Promise.all(recipients.map((pid) => notifyPlayer(pid, aviso)));
     envios += recipients.length;
   }
   return { juegos: games.length, envios };

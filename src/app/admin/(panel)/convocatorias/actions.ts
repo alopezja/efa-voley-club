@@ -9,7 +9,7 @@ import { serverEnv } from "@/lib/env";
 import { slugify } from "@/lib/slug";
 import { validateConvocatoria } from "@/lib/convocatoria-validation";
 import { syncConvocados } from "@/lib/convocados";
-import { sendPushToPlayer } from "@/lib/push";
+import { notifyPlayer } from "@/lib/notifications";
 import { validatePhotoMeta } from "@/lib/gallery-validation";
 
 export type ConvocatoriaState = {
@@ -117,9 +117,10 @@ export async function saveConvocatoria(
       : "";
     await Promise.all(
       nuevos.map((pid) =>
-        sendPushToPlayer(pid, {
-          title: "¡Estás convocado! 📣",
-          body: `${etiqueta}: ${v.titulo}${fechaTxt ? ` — ${fechaTxt}` : ""}`,
+        notifyPlayer(pid, {
+          tipo: "convocatoria",
+          titulo: "¡Estás convocado! 📣",
+          cuerpo: `${etiqueta}: ${v.titulo}${fechaTxt ? ` — ${fechaTxt}` : ""}`,
           url: "/jugador",
         })
       )

@@ -12,7 +12,7 @@ import { getCumpleanosDelMes, getResumenLogros } from "@/lib/comunidad";
 import { calcularLogros } from "@/lib/logros";
 import { LogrosStrip } from "@/components/jugador/logros-strip";
 import { CumpleanosCard } from "@/components/jugador/cumpleanos-card";
-import { PushToggle } from "@/components/jugador/push-toggle";
+import { PushPrompt } from "@/components/jugador/push-prompt";
 
 export const dynamic = "force-dynamic";
 
@@ -94,8 +94,10 @@ export default async function JugadorHomePage() {
           <CumpleanosCard cumples={cumples} />
         </div>
 
-        {/* Columna derecha: próximos juegos con relieve + notificaciones */}
+        {/* Columna derecha: aviso para activar notificaciones + próximos juegos con relieve */}
         <aside className="space-y-6 lg:sticky lg:top-20">
+          <PushPrompt />
+
           <section className="rounded-2xl border border-efa-red/40 bg-gradient-to-b from-white/[0.07] to-white/[0.01] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_16px_36px_-14px_rgba(0,0,0,0.75)] ring-1 ring-black/30">
             <div className="mb-4 flex items-center gap-2.5">
               <span className="h-6 w-1.5 rounded-full bg-efa-red" />
@@ -111,8 +113,6 @@ export default async function JugadorHomePage() {
               </div>
             )}
           </section>
-
-          <PushToggle />
         </aside>
       </div>
     </div>

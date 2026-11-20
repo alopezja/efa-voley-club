@@ -8,6 +8,7 @@ export const SECCIONES = [
   { key: "retos", label: "Retos", href: "/admin/retos" },
   { key: "noticias", label: "Noticias", href: "/admin/noticias" },
   { key: "convocatorias", label: "Convocatorias", href: "/admin/convocatorias" },
+  { key: "avisos", label: "Avisos", href: "/admin/avisos" },
   { key: "mensajes", label: "Mensajes", href: "/admin/mensajes" },
   { key: "galeria", label: "Galería", href: "/admin/galeria" },
   { key: "horarios", label: "Horarios", href: "/admin/horarios" },
