@@ -7,7 +7,7 @@ Sitio web del club de voleibol **Eso Fue Adentro (EFA)**: noticias, convocatoria
 - Next.js 15 (App Router, `src/`) + React 19 + TypeScript
 - Tailwind CSS v4 (tokens del club en `src/app/globals.css`)
 - Supabase (Postgres + Auth) para datos
-- Cloudflare R2 (compatible con S3) para imágenes, con presigned uploads
+- Cloudflare R2 (compatible con S3) para imágenes (subida vía servidor + compresión en el cliente)
 - Vitest + React Testing Library
 
 ## Cómo correr
@@ -31,14 +31,13 @@ Ver [`.env.local.example`](./.env.local.example) para la lista completa (Supabas
 
 ## Migraciones
 
-Las migraciones están en `supabase/migrations/`:
+El esquema vive en `supabase/migrations/` como archivos `.sql` numerados (`0001_…` en adelante). **Nunca** se cambia la base a mano desde la app: todo cambio de esquema es una migración nueva.
 
-1. `0001_init.sql` (esquema)
-2. `0002_rls.sql` (políticas RLS)
+- **Base nueva desde cero** (p. ej. el Supabase de desarrollo): pega `scripts/dev-schema.sql` en el SQL Editor — tiene todas las migraciones juntas, en orden e idempotentes.
+- **Cambio puntual**: agrega `supabase/migrations/00XX_descripcion.sql` (siguiente número) y córrelo en el SQL Editor. Son idempotentes (`if not exists`, `drop policy if exists`).
 
-Ejecutarlas en orden, ya sea pegándolas en el SQL Editor del proyecto de Supabase, o con la CLI:
+El dueño es quien corre las migraciones en **producción**.
 
-```bash
-supabase link --project-ref <ref>
-supabase db push
-```
+## Trabajo en equipo
+
+Si vas a desarrollar con otra persona, lee **[`docs/colaboracion.md`](./docs/colaboracion.md)**: flujo de ramas + Pull Requests, qué accesos dar al colaborador, y cómo usar un Supabase de **desarrollo** aparte para no tocar los datos reales.

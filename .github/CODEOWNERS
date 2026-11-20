@@ -1,0 +1,3 @@
+# Dueño del repositorio: se le pide revisión automáticamente en cada PR.
+# (Para forzarlo: Settings → Branches → regla en `main` → "Require review from Code Owners".)
+* @alopezja

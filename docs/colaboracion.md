@@ -69,7 +69,10 @@ Para montar una base de desarrollo desde cero, correr `scripts/dev-schema.sql` (
 2. **Proteger `main` en GitHub:** Settings → Branches → Add branch protection rule → `main`:
    - ✅ Require a pull request before merging
    - ✅ Require approvals (1)
+   - ✅ Require review from Code Owners (usa el archivo `.github/CODEOWNERS`, que ya pide al dueño como revisor en cada PR)
    - (Opcional) ✅ Require status checks (el build de Vercel)
+
+   > El repo ya trae una **plantilla de PR** (`.github/pull_request_template.md`) que recuerda declarar migraciones y probar en dev, y un **CODEOWNERS** que asigna al dueño como revisor automático.
 3. **Agregar al colaborador:** Settings → Collaborators → Add people → rol **Write**.
 4. **(Recomendado) Previews con la base de dev:** en Vercel, poner las variables de entorno con alcance **Preview** apuntando al Supabase de **desarrollo** (y dejar **Production** con las de producción). Así los PRs se previsualizan sin tocar datos reales.
 5. **R2 (fotos):** opcional, crear un bucket de desarrollo aparte y dar esas llaves; o dejar R2 vacío en dev (las subidas de foto no funcionan en local pero el resto sí).
