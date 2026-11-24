@@ -88,6 +88,24 @@ export function fechaBogota(d: Date): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Bogota" }).format(d);
 }
 
+// Valor de <input type="datetime-local"> ("YYYY-MM-DDTHH:MM") interpretado
+// como hora de Bogotá → ISO UTC. Independiente de la zona del servidor.
+export function localBogotaAIso(valor: string): string | null {
+  const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/.exec(valor.trim());
+  if (!m) return null;
+  const d = fechaColombia(m[1], m[2]);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}
+
+// ISO → "YYYY-MM-DDTHH:MM" en hora de Bogotá (para <input type="datetime-local">).
+export function isoAInputBogota(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const local = new Date(d.getTime() - 5 * 3600 * 1000);
+  return local.toISOString().slice(0, 16);
+}
+
 export function googleCalendarUrl(opts: {
   titulo: string;
   inicio: Date;

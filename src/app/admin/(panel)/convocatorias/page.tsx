@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Convocatorias", robots: { index: fal
 function fecha(c: Convocatoria): string {
   if (!c.fecha_torneo) return "Sin fecha";
   try {
-    return new Intl.DateTimeFormat("es", { dateStyle: "medium", timeStyle: "short" }).format(new Date(c.fecha_torneo));
+    return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", dateStyle: "medium", timeStyle: "short" }).format(new Date(c.fecha_torneo));
   } catch {
     return "";
   }

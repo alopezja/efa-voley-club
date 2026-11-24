@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Mensajes", robots: { index: false, f
 
 function fecha(c: ContactMessage): string {
   try {
-    return new Intl.DateTimeFormat("es", { dateStyle: "medium", timeStyle: "short" }).format(new Date(c.created_at));
+    return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", dateStyle: "medium", timeStyle: "short" }).format(new Date(c.created_at));
   } catch {
     return "";
   }

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 function fecha(a: Article): string {
   const d = a.fecha_publicacion ?? a.created_at;
   try {
-    return new Intl.DateTimeFormat("es", { day: "numeric", month: "long", year: "numeric" }).format(new Date(d));
+    return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", day: "numeric", month: "long", year: "numeric" }).format(new Date(d));
   } catch {
     return "";
   }

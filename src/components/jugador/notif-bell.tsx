@@ -20,7 +20,7 @@ function hace(iso: string): string {
   if (h < 24) return `hace ${h} h`;
   const d = Math.floor(h / 24);
   if (d < 7) return `hace ${d} d`;
-  return new Intl.DateTimeFormat("es", { day: "numeric", month: "short" }).format(new Date(iso));
+  return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", day: "numeric", month: "short" }).format(new Date(iso));
 }
 
 export function NotifBell() {

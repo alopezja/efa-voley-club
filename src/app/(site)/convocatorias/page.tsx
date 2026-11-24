@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 function fechaLarga(c: Convocatoria): string {
   if (!c.fecha_torneo) return "";
   try {
-    return new Intl.DateTimeFormat("es", { dateStyle: "full", timeStyle: "short" }).format(new Date(c.fecha_torneo));
+    return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", dateStyle: "full", timeStyle: "short" }).format(new Date(c.fecha_torneo));
   } catch {
     return "";
   }

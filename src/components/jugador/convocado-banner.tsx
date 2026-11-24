@@ -9,7 +9,7 @@ const TIPO_LABEL: Record<string, string> = {
 
 function fechaLarga(iso: string): string {
   try {
-    const s = new Intl.DateTimeFormat("es", {
+    const s = new Intl.DateTimeFormat("es", { timeZone: "America/Bogota",
       weekday: "long",
       day: "numeric",
       month: "long",
