@@ -39,14 +39,14 @@ export default async function Home() {
 
   const fechaCorta = (iso: string) => {
     try {
-      return new Intl.DateTimeFormat("es", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+      return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
     } catch {
       return "";
     }
   };
   const fechaConvo = (iso: string) => {
     try {
-      return new Intl.DateTimeFormat("es", { dateStyle: "full", timeStyle: "short" }).format(new Date(iso));
+      return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", dateStyle: "full", timeStyle: "short" }).format(new Date(iso));
     } catch {
       return "";
     }

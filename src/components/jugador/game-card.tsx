@@ -20,7 +20,7 @@ const NIVELES = [
 
 function fechaLabel(fecha: string): string {
   const d = new Date(`${fecha}T12:00:00-05:00`);
-  const s = new Intl.DateTimeFormat("es", { weekday: "long", day: "numeric", month: "long" }).format(d);
+  const s = new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", weekday: "long", day: "numeric", month: "long" }).format(d);
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 

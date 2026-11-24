@@ -94,7 +94,7 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
   for (const c of convocatorias) {
     if (!c.fecha_torneo) continue;
     const dt = new Date(c.fecha_torneo);
-    const fecha = dt.toISOString().slice(0, 10);
+    const fecha = fechaBogota(dt);
     const end = new Date(dt.getTime() + 2 * 3600 * 1000);
     const etiquetaConv =
       c.tipo === "torneo" ? "Torneo" : c.tipo === "amistoso" ? "Amistoso" : "Juego";
@@ -106,7 +106,7 @@ export async function getUpcomingGames(limit = 4): Promise<Game[]> {
       fecha,
       titulo: c.titulo,
       lugar: c.lugar,
-      horaTexto: new Intl.DateTimeFormat("es", { hour: "2-digit", minute: "2-digit" }).format(dt),
+      horaTexto: new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit" }).format(dt),
       comoLlegarUrl: comoLlegar(null, c.lugar),
       calendarUrl: googleCalendarUrl({
         titulo: c.titulo,

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { uploadToR2, deleteFromR2, keyFromPublicUrl } from "@/lib/r2";
 import { serverEnv } from "@/lib/env";
 import { slugify } from "@/lib/slug";
+import { localBogotaAIso } from "@/lib/game-dates";
 import { validateConvocatoria } from "@/lib/convocatoria-validation";
 import { syncConvocados } from "@/lib/convocados";
 import { notifyPlayer } from "@/lib/notifications";
@@ -75,10 +76,7 @@ export async function saveConvocatoria(
   }
 
   let fechaIso: string | null = null;
-  if (v.fecha_torneo) {
-    const d = new Date(v.fecha_torneo);
-    if (!Number.isNaN(d.getTime())) fechaIso = d.toISOString();
-  }
+  if (v.fecha_torneo) fechaIso = localBogotaAIso(v.fecha_torneo);
 
   const tipoRaw = String(formData.get("tipo") ?? "juego");
   const tipo = ["juego", "torneo", "amistoso"].includes(tipoRaw) ? tipoRaw : "juego";
@@ -113,7 +111,7 @@ export async function saveConvocatoria(
     const nuevos = await syncConvocados(convId, convocados);
     const etiqueta = tipo === "torneo" ? "Torneo" : tipo === "amistoso" ? "Amistoso" : "Juego";
     const fechaTxt = fechaIso
-      ? new Intl.DateTimeFormat("es", { dateStyle: "medium", timeStyle: "short" }).format(new Date(fechaIso))
+      ? new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", dateStyle: "medium", timeStyle: "short" }).format(new Date(fechaIso))
       : "";
     await Promise.all(
       nuevos.map((pid) =>

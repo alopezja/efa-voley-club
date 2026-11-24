@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 function fechaLarga(iso: string): string {
   try {
-    return new Intl.DateTimeFormat("es", { day: "numeric", month: "long", year: "numeric" }).format(new Date(iso));
+    return new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", day: "numeric", month: "long", year: "numeric" }).format(new Date(iso));
   } catch {
     return "";
   }

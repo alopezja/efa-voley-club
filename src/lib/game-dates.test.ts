@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { diaAWeekday, proximasFechas, parseHorario, googleCalendarUrl, fechaColombia, fechaBogota } from "./game-dates";
+import { diaAWeekday, proximasFechas, parseHorario, googleCalendarUrl, fechaColombia, fechaBogota, localBogotaAIso, isoAInputBogota } from "./game-dates";
 
 describe("game-dates", () => {
   it("mapea días (con acentos y mayúsculas)", () => {
@@ -50,5 +50,19 @@ describe("game-dates", () => {
     expect(url).toContain("calendar.google.com");
     expect(url).toContain("dates=20261125T010000Z%2F20261125T040000Z");
     expect(url).toContain("Cancha");
+  });
+});
+
+describe("zona Bogotá en datetime-local", () => {
+  it("interpreta la hora del input como Bogotá (UTC-5)", () => {
+    expect(localBogotaAIso("2026-11-30T18:00")).toBe("2026-11-30T23:00:00.000Z");
+    expect(localBogotaAIso("2026-11-30T21:30")).toBe("2026-12-01T02:30:00.000Z");
+    expect(localBogotaAIso("")).toBeNull();
+    expect(localBogotaAIso("basura")).toBeNull();
+  });
+  it("vuelve a la hora de Bogotá para el input", () => {
+    expect(isoAInputBogota("2026-11-30T23:00:00.000Z")).toBe("2026-11-30T18:00");
+    expect(isoAInputBogota("2026-12-01T02:30:00.000Z")).toBe("2026-11-30T21:30");
+    expect(isoAInputBogota(null)).toBe("");
   });
 });

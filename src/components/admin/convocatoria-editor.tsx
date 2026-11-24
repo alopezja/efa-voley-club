@@ -6,6 +6,7 @@ import { saveConvocatoria, type ConvocatoriaState } from "@/app/admin/(panel)/co
 import { compressImage } from "@/lib/compress-image";
 import type { Convocatoria } from "@/lib/convocatorias";
 import { labelPosicion } from "@/lib/positions";
+import { isoAInputBogota } from "@/lib/game-dates";
 
 const initial: ConvocatoriaState = { status: "idle" };
 
@@ -13,14 +14,6 @@ const input =
   "mt-1 w-full rounded-md border border-efa-ash/40 bg-efa-ink px-3 py-2 text-base text-efa-bone placeholder:text-efa-ash focus:border-efa-red focus:outline-none";
 const label = "block text-sm font-medium text-efa-ash";
 
-// ISO -> value para <input type="datetime-local"> (hora local)
-function toLocalInput(iso: string | null): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 function SaveBtn() {
   const { pending } = useFormStatus();
@@ -103,7 +96,7 @@ export function ConvocatoriaEditor({
               id="fecha_torneo"
               name="fecha_torneo"
               type="datetime-local"
-              defaultValue={toLocalInput(convocatoria?.fecha_torneo ?? null)}
+              defaultValue={isoAInputBogota(convocatoria?.fecha_torneo ?? null)}
               className={input}
             />
           </div>

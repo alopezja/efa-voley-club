@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 function fechaCorta(fecha: string): string {
   const d = new Date(`${fecha}T12:00:00-05:00`);
-  const s = new Intl.DateTimeFormat("es", { weekday: "short", day: "numeric", month: "short" }).format(d);
+  const s = new Intl.DateTimeFormat("es", { timeZone: "America/Bogota", weekday: "short", day: "numeric", month: "short" }).format(d);
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
